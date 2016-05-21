@@ -25,7 +25,7 @@
                 <subviews>
                     <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kq1-hb-Dki">
                         <rect key="frame" x="79" y="47" width="178" height="27"/>
-                        <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="below" numberOfTickMarks="50" sliderType="linear" id="lu0-U4-sPV"/>
+                        <sliderCell key="cell" state="on" alignment="left" minValue="1" maxValue="250" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="50" sliderType="linear" id="lu0-U4-sPV"/>
                     </slider>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="17u-y1-bKZ">
                         <rect key="frame" x="202" y="13" width="59" height="32"/>

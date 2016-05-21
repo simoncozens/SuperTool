@@ -14,14 +14,15 @@
 #import <GlyphsCore/GSLayer.h>
 #import <GlyphsCore/GSPath.h>
 #import <GlyphsCore/GSGeometrieHelper.h>
+#import "GSNode+SCNodeUtils.h"
 
-@interface SuperTool : GSToolSelect {
-    NSArray* tunniSeg;
+@interface SuperTool : GSToolSelect <NSWindowDelegate> {
     NSMutableArray* simplifySegSet;
     NSMutableArray* simplifySpliceSet;
     NSMutableArray* simplifyPathSet;
     NSMutableDictionary *copiedPaths;
     NSMutableDictionary *originalPaths;
+    NSArray* tunniSeg;
     bool tunniDraggingLine;
     GSNode* tunniSegP2;
     GSNode* tunniSegP3;
@@ -29,9 +30,15 @@
     __weak IBOutlet NSButton *simplifyDismiss;
     __weak IBOutlet NSSlider *simplifySlider;
 }
-- (void) displayCurvatureState;
-+ (void)SCfitCurveOn1:(NSPoint)On1 off1:(NSPoint*)Off1 Off2:(NSPoint*)Off2 on2:(NSPoint)On2 toOrigiPoints:(NSMutableArray*)OrigiPoints;
+
 + (NSMutableArray*)chordLengthParameterize:(NSMutableArray*)points;
 - (NSUInteger)splice:(GSPath*)newPath into:(GSPath*)path at:(NSRange)splice;
++ (GSPath*)generateBezier:(NSMutableArray*)points parameters:(NSMutableArray*)u  leftTangent:(NSPoint)leftTangent rightTangent:(NSPoint)rightTangent;
++ (CGFloat)computeMaxErrorForPath:(GSPath*) path ThroughPoints:(NSMutableArray*)points parameters:(NSMutableArray*)parameters returningSplitPoint:(NSUInteger*)splitPoint;
++ (GSPath*)fitCurveThrough:(NSMutableArray*)points leftTangent:(NSPoint)leftTangent rightTangent:(NSPoint)rightTangent precision:(CGFloat)precision;
+//+ (void)appendCurve:(GSPath*)source toPath:(GSPath*)target;
+
+- (void)iterateOnCurvedSegmentsOfLayer:(GSLayer*)l withBlock:(void (^)(NSArray*seg))handler;
+
 @end
 
