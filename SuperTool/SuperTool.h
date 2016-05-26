@@ -16,6 +16,12 @@
 #import <GlyphsCore/GSGeometrieHelper.h>
 #import "GSNode+SCNodeUtils.h"
 
+#ifdef DEBUG_MODE
+#define SCLog( ... ) NSLog( ##__VA_ARGS__ )
+#else
+#define SCLog( ... )
+#endif
+
 @interface SuperTool : GSToolSelect <NSWindowDelegate> {
     NSMutableArray* simplifySegSet;
     NSMutableArray* simplifySpliceSet;
