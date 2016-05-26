@@ -48,7 +48,7 @@
         NSInteger index = [[n parent] indexOfNode:n];
         GSNode* rhandle = [[n parent] nodeAtIndex:index+1];
         GSNode* lhandle = [[n parent] nodeAtIndex:index-1];
-        CGFloat lHandleLen = GSDistance([n position], [lhandle position]);
+//        CGFloat lHandleLen = GSDistance([n position], [lhandle position]);
         CGFloat rHandleLen = GSDistance([n position], [rhandle position]);
         // Average the two angles first
         NSPoint ua = GSUnitVectorFromTo([lhandle position], [n position]);

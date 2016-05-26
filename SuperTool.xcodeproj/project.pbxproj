@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F479451E1CF699C600EB214B /* SuperTool+Simplify.m in Sources */ = {isa = PBXBuildFile; fileRef = F479451D1CF699C600EB214B /* SuperTool+Simplify.m */; };
 		F49A86C71CF053C400B14CC2 /* GSNode+SCNodeUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F49A86C61CF053C400B14CC2 /* GSNode+SCNodeUtils.m */; };
 		F49A86CA1CF055C800B14CC2 /* SuperTool+TunniEditing.m in Sources */ = {isa = PBXBuildFile; fileRef = F49A86C91CF055C800B14CC2 /* SuperTool+TunniEditing.m */; };
 		F49A86CD1CF0899000B14CC2 /* SuperTool+Curvature.m in Sources */ = {isa = PBXBuildFile; fileRef = F49A86CC1CF0899000B14CC2 /* SuperTool+Curvature.m */; };
@@ -34,6 +35,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F479451C1CF699C600EB214B /* SuperTool+Simplify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SuperTool+Simplify.h"; sourceTree = "<group>"; };
+		F479451D1CF699C600EB214B /* SuperTool+Simplify.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SuperTool+Simplify.m"; sourceTree = "<group>"; };
 		F49A86C51CF053C400B14CC2 /* GSNode+SCNodeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GSNode+SCNodeUtils.h"; sourceTree = "<group>"; };
 		F49A86C61CF053C400B14CC2 /* GSNode+SCNodeUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GSNode+SCNodeUtils.m"; sourceTree = "<group>"; };
 		F49A86C81CF055C800B14CC2 /* SuperTool+TunniEditing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SuperTool+TunniEditing.h"; sourceTree = "<group>"; };
@@ -103,6 +106,8 @@
 				F4CA636C1CE04B4A002EA26E /* SCPathTime.m */,
 				F4B03C981CC88E7100564F32 /* SuperTool.h */,
 				F4B03C991CC88E7100564F32 /* SuperTool.m */,
+				F479451C1CF699C600EB214B /* SuperTool+Simplify.h */,
+				F479451D1CF699C600EB214B /* SuperTool+Simplify.m */,
 				F49A86CE1CF08B8500B14CC2 /* SuperTool+Harmonize.h */,
 				F49A86CF1CF08B8500B14CC2 /* SuperTool+Harmonize.m */,
 				F49A86CB1CF0899000B14CC2 /* SuperTool+Curvature.h */,
@@ -202,6 +207,7 @@
 				F49A86CD1CF0899000B14CC2 /* SuperTool+Curvature.m in Sources */,
 				F49A86CA1CF055C800B14CC2 /* SuperTool+TunniEditing.m in Sources */,
 				F49A86D01CF08B8500B14CC2 /* SuperTool+Harmonize.m in Sources */,
+				F479451E1CF699C600EB214B /* SuperTool+Simplify.m in Sources */,
 				F49A86C71CF053C400B14CC2 /* GSNode+SCNodeUtils.m in Sources */,
 				F4CA636D1CE04B4A002EA26E /* SCPathTime.m in Sources */,
 			);
@@ -292,10 +298,7 @@
 				DSTROOT = "~/Library/Application Support/Glyphs/Plugins";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SYSTEM_APPS_DIR)/Glyphs.app/Contents/Frameworks",
-					"$(PROJECT_DIR)/SuperTool/DevMateKit.framework/Frameworks/**",
 					"$(PROJECT_DIR)/SuperTool/",
-					"$(PROJECT_DIR)/SuperTool/DevMateKit",
-					"$(PROJECT_DIR)/SuperTool",
 				);
 				INFOPLIST_FILE = SuperTool/Info.plist;
 				INSTALL_PATH = /;
@@ -313,10 +316,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SYSTEM_APPS_DIR)/Glyphs.app/Contents/Frameworks",
-					"$(PROJECT_DIR)/SuperTool/DevMateKit.framework/Frameworks/**",
 					"$(PROJECT_DIR)/SuperTool/",
-					"$(PROJECT_DIR)/SuperTool/DevMateKit",
-					"$(PROJECT_DIR)/SuperTool",
 				);
 				INFOPLIST_FILE = SuperTool/Info.plist;
 				INSTALL_PATH = /;
