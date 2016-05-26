@@ -26,18 +26,18 @@
 - (GSNode*)nextOnCurve {
     GSNode* nn = [self nextNode];
     if ([nn type] != OFFCURVE) return nn;
-    nn = [self nextNode];
+    nn = [nn nextNode];
     if ([nn type] != OFFCURVE) return nn;
-    nn = [self nextNode];
+    nn = [nn nextNode];
     return nn;
 }
 
 - (GSNode*)prevOnCurve {
     GSNode* nn = [self prevNode];
     if ([nn type] != OFFCURVE) return nn;
-    nn = [self prevNode];
+    nn = [nn prevNode];
     if ([nn type] != OFFCURVE) return nn;
-    nn = [self prevNode];
+    nn = [nn prevNode];
     return nn;
 }
 
