@@ -95,4 +95,11 @@
     return GSAddPoints(alpha, beta);
 }
 
+- (NSPoint)SCPointAtPathTime:(CGFloat)t {
+    return GSPointAtTime( [[self nodeAtIndex:0] position],
+                  [[self nodeAtIndex:1] position],
+                  [[self nodeAtIndex:2] position],
+                  [[self nodeAtIndex:3] position], t);
+}
+
 @end

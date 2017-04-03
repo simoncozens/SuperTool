@@ -21,4 +21,5 @@
 - (void)append:(GSPath*)source;
 - (NSPoint)qPrimeAtTime:(CGFloat)t;
 - (NSPoint)qPrimePrimeAtTime:(CGFloat)t;
+- (NSPoint)SCPointAtPathTime:(CGFloat)t;
 @end

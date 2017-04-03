@@ -20,7 +20,7 @@
 //#define DEBUG_MODE
 
 #ifdef DEBUG_MODE
-#define SCLog( ... ) NSLog( ##__VA_ARGS__ )
+#define SCLog NSLog
 #else
 #define SCLog( ... )
 #endif

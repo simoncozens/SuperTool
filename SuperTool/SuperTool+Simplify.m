@@ -8,6 +8,7 @@
 
 #import "SuperTool+Simplify.h"
 #import "SuperTool+Harmonize.h"
+#import "SCCurveFitter.h"
 
 @implementation SuperTool (Simplify)
 
@@ -136,8 +137,8 @@ bool willUndo = true;
             SCLog(@"Parent dead before simplifying!");
             return;
         }
-        GSPath *newPath = [SuperTool SCfitCurvetoOrigiPoints:s precision:reducePercentage];
-        //        [newPath addExtremes:TRUE];
+        GSPath *newPath = [SCCurveFitter fitCurveToPoints:s withError:reducePercentage maxSegments:240];
+        
         NSUInteger newend = [self splice:newPath into:p at:startEnd];
         SCLog(@"New end is %lu",(unsigned long)newend );
         simplifySpliceSet[i] = [NSValue valueWithRange:NSMakeRange(startEnd.location, newend)];
@@ -168,211 +169,24 @@ bool willUndo = true;
     splice.length =  [newPath countOfNodes] -1;
     j = splice.location;
     while (j - splice.location < splice.length ) {
-        [[path nodeAtIndex:j] correct];
+//        [[path nodeAtIndex:j] correct];
 //        [self harmonize:[path nodeAtIndex:j]];
         j++;
     }
-    if ([path startNode] && [[path startNode] type] == CURVE) {
-        [path startNode].type = LINE;
-    }
-    if ([path endNode] && [[path endNode] type] == CURVE) {
-        [path endNode].type = LINE;
-    }
+//    if ([path startNode] && [[path startNode] type] == CURVE) {
+//        [path startNode].type = LINE;
+//    }
+//    if ([path endNode] && [[path endNode] type] == CURVE) {
+//        [path endNode].type = LINE;
+//    }
     if ([[[path nodeAtIndex:j] nextNode] type] != OFFCURVE) {
         [path nodeAtIndex:j].type = LINE;
     }
     if ([[[path nodeAtIndex:splice.location] prevNode] type] != OFFCURVE) {
         [path nodeAtIndex:splice.location].type = LINE;
     }
-    
+    SCLog(@"spliced path: %@", [path nodes]);
     return [newPath countOfNodes] -1;
-}
-
-+ (GSPath*)SCfitCurvetoOrigiPoints:(NSMutableArray*)points precision:(CGFloat)precision {
-    NSUInteger pcount = [points count];
-    NSPoint leftTangent = GSUnitVector(GSSubtractPoints([(GSNode*)points[1] position], [(GSNode*)points[0] position] ));
-    NSPoint rightTangent = GSUnitVector(GSSubtractPoints([(GSNode*)points[pcount-2] position], [(GSNode*)points[pcount-1] position]));
-    NSRect pointBounds = [self boundsOfPoints:points];
-    precision = sqrt((NSHeight(pointBounds)+NSWidth(pointBounds)) /precision);
-
-    return [self fitCurveThrough:points leftTangent:leftTangent rightTangent:rightTangent precision:precision];
-}
-
-+ (NSRect) boundsOfPoints:(NSArray*)points {
-    NSPoint bl = NSMakePoint(MAXFLOAT, MAXFLOAT);
-    NSPoint tr = NSMakePoint(-MAXFLOAT, -MAXFLOAT);
-    NSPoint p;
-    for (GSNode *n in points) {
-        p = [n position];
-        if (p.x > tr.x) tr.x = p.x;
-        if (p.y > tr.y) tr.y = p.y;
-        if (p.x < bl.x) bl.x = p.x;
-        if (p.y < bl.y) bl.y = p.y;
-    }
-    return GSRectFromTwoPoints(bl,tr);
-}
-
-+ (GSPath*)fitCurveThrough:(NSMutableArray*)points leftTangent:(NSPoint)leftTangent rightTangent:(NSPoint)rightTangent precision:(CGFloat)precision {
-    NSPoint start = [(GSNode*)points[0] position];
-    NSPoint end = [(GSNode*)[points lastObject] position];
-    CGFloat dist = GSDistance(start, end);
-    NSUInteger pcount = [points count];
-    if (pcount ==2) {
-        GSPath* p = [[GSPath alloc] init];
-        // Approximate
-        [p addSmooth:start];
-        [p addOffcurve:GSAddPoints(start, GSScalePoint(leftTangent, dist / 3.0))];
-        [p addOffcurve:GSAddPoints(end, GSScalePoint(rightTangent, dist / 3.0))];
-        [p addSmooth:end];
-        return p;
-    }
-    NSUInteger splitPoint = 0;
-    NSMutableArray *u = [self chordLengthParameterize:points];
-    
-    for (int i =0; i <=20 ; i++) {
-        SCLog(@"Attempt %i, parameters are: %@", i, u);
-        GSPath* bezCurve = [self generateBezier:points parameters:u leftTangent:leftTangent rightTangent:rightTangent];
-        SCLog(@"Attempt %i, got bezier: %@", i, [bezCurve nodes]);
-        
-        CGFloat maxError = [self computeMaxErrorForPath:bezCurve ThroughPoints:points parameters:u returningSplitPoint:&splitPoint];
-        SCLog(@"Maxerror = %f, precision = %f", maxError, precision);
-        if (maxError < precision)
-            return bezCurve;
-        u = [self reparameterize:bezCurve throughPoints:points originalParameters:u];
-        if (i > 0 && maxError > precision * precision) break;
-        
-    }
-    SCLog(@"Trying to split");
-    GSPath *p = [[GSPath alloc] init];
-    NSPoint centerTangent = GSUnitVector(GSSubtractPoints([(GSNode*)points[splitPoint-1] position], [(GSNode*)points[splitPoint+1] position]));
-    NSMutableArray* leftPoints = [[NSMutableArray alloc] init];
-    NSMutableArray* rightPoints = [[NSMutableArray alloc] init];
-    
-    NSUInteger i = 0;
-    SCLog(@"Split point is %lu", (unsigned long)splitPoint);
-    while (i <= splitPoint) {
-        [leftPoints addObject:[points objectAtIndex:i]];
-        i++;
-    }
-    SCLog(@"Left points are %@", leftPoints);
-    [p append:
-     [self fitCurveThrough:leftPoints leftTangent:leftTangent rightTangent:centerTangent precision:precision]];
-    i--;
-    while (i < [points count]) {
-        [rightPoints addObject:[points objectAtIndex:i]];
-        i++;
-    }
-    SCLog(@"Right points are %@", rightPoints);
-    [p removeNodeAtIndex:([p countOfNodes]-1)];
-    [p append:
-     [self fitCurveThrough:rightPoints leftTangent:GSScalePoint(centerTangent, -1.0) rightTangent:rightTangent precision:precision]];
-    SCLog(@"Final path is %@", [p nodes]);
-    return p;
-}
-
-+ (GSPath*)generateBezier:(NSMutableArray*)points parameters:(NSMutableArray*)parameters  leftTangent:(NSPoint)leftTangent rightTangent:(NSPoint)rightTangent {
-    // A is an array of pairs of NSPoints, same length as parameters.
-    NSMutableArray *a = [[NSMutableArray alloc]init];
-    for (NSNumber *n in parameters) {
-        CGFloat u = [n floatValue];
-        NSArray *vector = [[NSArray alloc]initWithObjects:
-                           [NSValue valueWithPoint:GSScalePoint(leftTangent, 3*(1-u)*(1-u) * u)],
-                           [NSValue valueWithPoint:GSScalePoint(rightTangent, 3*(1-u)*u * u)],
-                           nil];
-        [a addObject:vector];
-    }
-    SCLog(@"A is %@",a);
-    CGFloat c00 = 0, c01 = 0, c10 = 0, c11 = 0;
-    CGFloat x0, x1;
-    int i =0;
-    
-    while (i <= [parameters count]-1) {
-        c00 += GSDot([a[i][0] pointValue], [a[i][0] pointValue]);
-        c01 += GSDot([a[i][0] pointValue], [a[i][1] pointValue]);
-        c10 += GSDot([a[i][0] pointValue], [a[i][1] pointValue]);
-        c11 += GSDot([a[i][1] pointValue], [a[i][1] pointValue]);
-        CGFloat u = [parameters[i] floatValue];
-        NSPoint p = GSSubtractPoints([(GSNode*)points[i] position],
-                                     GSPointAtTime([(GSNode*)points[0] position],[(GSNode*)points[0] position],[(GSNode*)[points lastObject] position],[(GSNode*)[points lastObject] position], u));
-        SCLog(@"P is %f,%f", p.x,p.y);
-        x0 += GSDot([a[i][0] pointValue], p);
-        x1 += GSDot([a[i][1] pointValue], p);
-        i++;
-    }
-    
-    SCLog(@"C is [[ %f,%f],[%f,%f]]", c00, c01, c10, c11);
-    SCLog(@"X is %f, %f", x0,x1);
-    CGFloat det_C0_C1 = c00 * c11 - c10 * c01;
-    CGFloat det_C0_X  = c00 * x1 - c10 * x0;
-    CGFloat det_X_C1  = x0 * c11 - x1*c01;
-    CGFloat alphaL = fabs(det_C0_C1) <= FLT_EPSILON ? 0 : det_X_C1 / det_C0_C1;
-    CGFloat alphaR = fabs(det_C0_C1) <= FLT_EPSILON ? 0 : det_C0_X / det_C0_C1;
-    SCLog(@"alphaL = %f, alphaR = %f", alphaL, alphaR);
-    NSPoint start = [(GSNode*)points[0] position];
-    NSPoint end = [(GSNode*)[points lastObject] position];
-    CGFloat dist = GSDistance(start, end);
-    
-    CGFloat epsilon = 1.0e-6 * dist;
-    GSPath* p = [[GSPath alloc] init];
-    // Approximate
-    [p addSmooth:start];
-    SCLog(@"right Tangent = %f,%f",  rightTangent.x, rightTangent.y);
-    
-    if (alphaL < epsilon || alphaR < epsilon) {
-        [p addOffcurve:GSAddPoints(start, GSScalePoint(leftTangent, dist / 3.0))];
-        [p addOffcurve:GSAddPoints(end, GSScalePoint(rightTangent, dist / 3.0))];
-    } else {
-        [p addOffcurve:GSAddPoints(start, GSScalePoint(leftTangent, alphaL))];
-        [p addOffcurve:GSAddPoints(end, GSScalePoint(rightTangent, alphaR))];
-    }
-    [p addSmooth:end];
-    return p;
-}
-
-+ (CGFloat)computeMaxErrorForPath:(GSPath*) path ThroughPoints:(NSMutableArray*)points parameters:(NSMutableArray*)parameters returningSplitPoint:(NSUInteger*)splitPoint {
-    CGFloat maxDist = 0.0;
-    *splitPoint = [path countOfNodes] / 2;
-    NSUInteger i =0;
-    while (i < [points count]) {
-//        CGFloat dist = GSSquareDistance([(GSNode*)points[i] position], GSPointAtTime(
-//                                                                                     [[path nodeAtIndex:0] position],
-//                                                                                     [[path nodeAtIndex:1] position],
-//                                                                                     [[path nodeAtIndex:2] position],
-//                                                                                     [[path nodeAtIndex:3] position],
-//                                                                                     [parameters[i] floatValue]));
-        CGFloat dist = GSDistanceOfPointFromCurve([(GSNode*)points[i] position],
-                                                  [[path nodeAtIndex:0]position],
-                                                  [[path nodeAtIndex:1]position],
-                                                  [[path nodeAtIndex:2]position],
-                                                  [[path nodeAtIndex:3]position]);
-        dist = dist * dist;
-
-        if (dist > maxDist) {
-            maxDist = dist;
-            *splitPoint = i;
-        }
-        i++;
-    }
-    SCLog(@"Furthest point between curve %@ and points %@ is %f", [path nodes], points, maxDist);
-    return maxDist;
-}
-
-+ (NSMutableArray*)chordLengthParameterize:(NSMutableArray*)points {
-    NSMutableArray* u = [[NSMutableArray alloc]init];
-    [u addObject:@0.0];
-    NSUInteger i = 1;
-    while (i < [points count]) {
-        CGFloat v = [u[i==0? [u count]-1 : i-1] floatValue];
-        v += GSDistance([(GSNode*)points[i] position], [(GSNode*)points[i==0? [u count]-1 : i-1] position]);
-        [u addObject:[NSNumber numberWithFloat:v]];
-        i++;
-    }
-    i = 0;
-    while (i < [u count]) {
-        u[i] = [NSNumber numberWithFloat:([u[i] floatValue] / [u[[u count]-1] floatValue])];
-        i++;
-    }
-    return u;
 }
 
 - (void)commitSimplify {
@@ -399,35 +213,4 @@ bool willUndo = true;
     if ([notification object] == simplifyWindow) [simplifyWindow close];
 }
 
-static inline NSPoint SCMultiply(NSPoint P1, NSPoint P2) {
-    return NSMakePoint(P1.x * P2.x, P1.y*P2.y);
-}
-static inline CGFloat SCSum(NSPoint P1) {
-    return P1.x + P1.y;
-}
-
-+ (NSMutableArray*)reparameterize:(GSPath*)path throughPoints:(NSMutableArray*)points originalParameters:(NSMutableArray*)parameters {
-    NSMutableArray *result = [[NSMutableArray alloc] init];
-    for (int i=0; i < [points count]; i++) {
-        CGFloat u = [parameters[i] floatValue];
-        NSPoint point = [(GSNode*)points[i] position];
-        NSPoint d = GSSubtractPoints(GSPointAtTime( [[path nodeAtIndex:0] position],
-                                                   [[path nodeAtIndex:1] position],
-                                                   [[path nodeAtIndex:2] position],
-                                                   [[path nodeAtIndex:3] position],
-                                                   u), point);
-        NSPoint qPrime = [path qPrimeAtTime:u];
-        NSPoint qPrimePrime = [path qPrimePrimeAtTime:u];
-        CGFloat numerator = SCSum(SCMultiply(d,qPrime));
-        CGFloat denominator = SCSum(
-                                    GSAddPoints(SCMultiply(qPrime, qPrime), SCMultiply(d, qPrimePrime))
-                                    );
-        if (fabs(denominator) <= FLT_EPSILON) {
-            [result addObject:[NSNumber numberWithFloat:u]];
-        } else {
-            [result addObject:[NSNumber numberWithFloat:u-(numerator/denominator)]];
-        }
-    }
-    return result;
-}
 @end

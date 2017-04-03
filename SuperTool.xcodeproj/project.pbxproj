@@ -18,8 +18,11 @@
 		F4B03C9A1CC88E7100564F32 /* SuperTool.m in Sources */ = {isa = PBXBuildFile; fileRef = F4B03C991CC88E7100564F32 /* SuperTool.m */; };
 		F4B03C9D1CC88E7100564F32 /* ToolbarIconTemplate.pdf in Resources */ = {isa = PBXBuildFile; fileRef = F4B03C9C1CC88E7100564F32 /* ToolbarIconTemplate.pdf */; };
 		F4B03C9F1CC88E7100564F32 /* GlyphsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4B03C9E1CC88E7100564F32 /* GlyphsCore.framework */; };
+		F4BE467C1D3752340018EE8C /* GSPath+SCPathUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F4BE467B1D3752340018EE8C /* GSPath+SCPathUtils.m */; };
 		F4CA636D1CE04B4A002EA26E /* SCPathTime.m in Sources */ = {isa = PBXBuildFile; fileRef = F4CA636C1CE04B4A002EA26E /* SCPathTime.m */; };
 		F4CA636F1CE04BA6002EA26E /* SimplifyInterface.xib in Resources */ = {isa = PBXBuildFile; fileRef = F4CA636E1CE04BA6002EA26E /* SimplifyInterface.xib */; };
+		F4E8FEA31E91B96800A19E0B /* SCCurveFitter.m in Sources */ = {isa = PBXBuildFile; fileRef = F4E8FEA21E91B96800A19E0B /* SCCurveFitter.m */; };
+		F4E8FEA61E91C90200A19E0B /* SCCurveFitter+Tangents.m in Sources */ = {isa = PBXBuildFile; fileRef = F4E8FEA51E91C90200A19E0B /* SCCurveFitter+Tangents.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -54,9 +57,15 @@
 		F4B03C9C1CC88E7100564F32 /* ToolbarIconTemplate.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = ToolbarIconTemplate.pdf; sourceTree = "<group>"; };
 		F4B03C9E1CC88E7100564F32 /* GlyphsCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GlyphsCore.framework; path = /Applications/Glyphs.app/Contents/Frameworks/GlyphsCore.framework; sourceTree = "<absolute>"; };
 		F4B03CA01CC88E7100564F32 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F4BE467A1D3752340018EE8C /* GSPath+SCPathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GSPath+SCPathUtils.h"; sourceTree = "<group>"; };
+		F4BE467B1D3752340018EE8C /* GSPath+SCPathUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GSPath+SCPathUtils.m"; sourceTree = "<group>"; };
 		F4CA636B1CE04B4A002EA26E /* SCPathTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCPathTime.h; sourceTree = "<group>"; };
 		F4CA636C1CE04B4A002EA26E /* SCPathTime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCPathTime.m; sourceTree = "<group>"; };
 		F4CA636E1CE04BA6002EA26E /* SimplifyInterface.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SimplifyInterface.xib; sourceTree = "<group>"; };
+		F4E8FEA11E91B96800A19E0B /* SCCurveFitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCCurveFitter.h; sourceTree = "<group>"; };
+		F4E8FEA21E91B96800A19E0B /* SCCurveFitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCCurveFitter.m; sourceTree = "<group>"; };
+		F4E8FEA41E91C90200A19E0B /* SCCurveFitter+Tangents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SCCurveFitter+Tangents.h"; sourceTree = "<group>"; };
+		F4E8FEA51E91C90200A19E0B /* SCCurveFitter+Tangents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SCCurveFitter+Tangents.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +117,10 @@
 				F4B03C991CC88E7100564F32 /* SuperTool.m */,
 				F479451C1CF699C600EB214B /* SuperTool+Simplify.h */,
 				F479451D1CF699C600EB214B /* SuperTool+Simplify.m */,
+				F4E8FEA11E91B96800A19E0B /* SCCurveFitter.h */,
+				F4E8FEA21E91B96800A19E0B /* SCCurveFitter.m */,
+				F4E8FEA41E91C90200A19E0B /* SCCurveFitter+Tangents.h */,
+				F4E8FEA51E91C90200A19E0B /* SCCurveFitter+Tangents.m */,
 				F49A86CE1CF08B8500B14CC2 /* SuperTool+Harmonize.h */,
 				F49A86CF1CF08B8500B14CC2 /* SuperTool+Harmonize.m */,
 				F49A86CB1CF0899000B14CC2 /* SuperTool+Curvature.h */,
@@ -116,6 +129,8 @@
 				F49A86C91CF055C800B14CC2 /* SuperTool+TunniEditing.m */,
 				F49A86C51CF053C400B14CC2 /* GSNode+SCNodeUtils.h */,
 				F49A86C61CF053C400B14CC2 /* GSNode+SCNodeUtils.m */,
+				F4BE467A1D3752340018EE8C /* GSPath+SCPathUtils.h */,
+				F4BE467B1D3752340018EE8C /* GSPath+SCPathUtils.m */,
 				F4B03CA01CC88E7100564F32 /* Info.plist */,
 				F4B03C9B1CC88E7100564F32 /* Supporting Files */,
 				F4CA636E1CE04BA6002EA26E /* SimplifyInterface.xib */,
@@ -159,7 +174,7 @@
 		F4B03C861CC88E7100564F32 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Simon Cozens";
 				TargetAttributes = {
 					F4B03C8D1CC88E7100564F32 = {
@@ -205,10 +220,13 @@
 			files = (
 				F4B03C9A1CC88E7100564F32 /* SuperTool.m in Sources */,
 				F49A86CD1CF0899000B14CC2 /* SuperTool+Curvature.m in Sources */,
+				F4E8FEA31E91B96800A19E0B /* SCCurveFitter.m in Sources */,
+				F4E8FEA61E91C90200A19E0B /* SCCurveFitter+Tangents.m in Sources */,
 				F49A86CA1CF055C800B14CC2 /* SuperTool+TunniEditing.m in Sources */,
 				F49A86D01CF08B8500B14CC2 /* SuperTool+Harmonize.m in Sources */,
 				F479451E1CF699C600EB214B /* SuperTool+Simplify.m in Sources */,
 				F49A86C71CF053C400B14CC2 /* GSNode+SCNodeUtils.m in Sources */,
+				F4BE467C1D3752340018EE8C /* GSPath+SCPathUtils.m in Sources */,
 				F4CA636D1CE04B4A002EA26E /* SCPathTime.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -229,8 +247,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
@@ -251,6 +271,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 			};
@@ -269,8 +290,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
@@ -285,6 +308,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 			};
 			name = Release;
