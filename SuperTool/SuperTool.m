@@ -44,8 +44,10 @@ const int SAMPLE_SIZE = 200;
     [simplifySlider setTarget:self];
     [simplifyWindow setDelegate:self];
     [simplifySlider setAction:@selector(doSimplify)];
-    [simplifyDismiss setTarget: self];
-    [simplifyDismiss setAction:@selector(dismissSimplify)];
+    [simplifyOK setTarget: self];
+    [simplifyOK setAction:@selector(commitSimplify)];
+    [simplifyCancel setTarget: self];
+    [simplifyCancel setAction:@selector(revertSimplify)];
     
     return self;
 }
@@ -77,9 +79,9 @@ const int SAMPLE_SIZE = 200;
 - (NSMenu *)defaultContextMenu {
 	// Adds items to the context menu.
     NSMenu *theMenu = [super defaultContextMenu];
-    [self addCurvatureToContextMenu:theMenu];
     [self addTunniToContextMenu:theMenu];
-    [theMenu insertItem:[NSMenuItem separatorItem] atIndex:2];
+    [self addCurvatureToContextMenu:theMenu];
+    [theMenu insertItem:[NSMenuItem separatorItem] atIndex:3];
 
     return theMenu;
 }

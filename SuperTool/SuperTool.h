@@ -33,7 +33,8 @@
     GSNode* tunniSegP2;
     GSNode* tunniSegP3;
     IBOutlet NSWindow *simplifyWindow;
-    __weak IBOutlet NSButton *simplifyDismiss;
+    __weak IBOutlet NSButton *simplifyOK;
+    __weak IBOutlet NSButton *simplifyCancel;
     __weak IBOutlet NSSlider *simplifySlider;
 }
 
