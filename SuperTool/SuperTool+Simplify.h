@@ -10,7 +10,8 @@
 
 @interface SuperTool (Simplify)
 - (void) showSimplifyWindow;
-- (void)dismissSimplify;
+- (void)commitSimplify;
+- (void)revertSimplify;
 - (void)doSimplify;
 
 + (NSMutableArray*)chordLengthParameterize:(NSMutableArray*)points;
@@ -19,5 +20,6 @@
 + (CGFloat)computeMaxErrorForPath:(GSPath*) path ThroughPoints:(NSMutableArray*)points parameters:(NSMutableArray*)parameters returningSplitPoint:(NSUInteger*)splitPoint;
 + (GSPath*)fitCurveThrough:(NSMutableArray*)points leftTangent:(NSPoint)leftTangent rightTangent:(NSPoint)rightTangent precision:(CGFloat)precision;
 //+ (void)appendCurve:(GSPath*)source toPath:(GSPath*)target;
+
 
 @end

@@ -11,6 +11,8 @@
 
 @implementation SuperTool (Simplify)
 
+bool willUndo = true;
+
 // Ensure selection array contains [s,e]
 - (void) addToSelectionSegmentStarting:(GSNode*)s Ending:(GSNode*)e {
     NSMutableArray *a;
@@ -37,6 +39,7 @@
     // Capture current seg selection
     // A segment is selected if its start and end nodes are selected.
     GSLayer* currentLayer = [_editViewController.graphicView activeLayer];
+    willUndo = true;
     NSMutableOrderedSet* sel = [currentLayer selection];
     [simplifySegSet removeAllObjects];
     [simplifySpliceSet removeAllObjects];
@@ -387,7 +390,13 @@
     return u;
 }
 
-- (void)dismissSimplify {
+- (void)commitSimplify {
+    willUndo = false;
+    [simplifyWindow close];
+}
+
+- (void)revertSimplify {
+    willUndo= true;
     [simplifyWindow close];
 }
 
@@ -395,6 +404,9 @@
     if ([notification object] == simplifyWindow) {
         GSLayer* currentLayer = [_editViewController.graphicView activeLayer];
         [[currentLayer undoManager] endUndoGrouping];
+        if (willUndo) {
+            [[currentLayer undoManager] undo];
+        }
     }
 }
 

@@ -7,7 +7,8 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SuperTool">
             <connections>
-                <outlet property="simplifyDismiss" destination="17u-y1-bKZ" id="fdD-lZ-cqI"/>
+                <outlet property="simplifyCancel" destination="uhk-X0-x8z" id="jDV-hV-29m"/>
+                <outlet property="simplifyOK" destination="17u-y1-bKZ" id="Kf6-4a-gMd"/>
                 <outlet property="simplifySlider" destination="kq1-hb-Dki" id="Q0e-0h-Jvm"/>
                 <outlet property="simplifyWindow" destination="QvC-M9-y7g" id="kXK-JM-xQQ"/>
             </connections>
@@ -45,6 +46,16 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uhk-X0-x8z">
+                        <rect key="frame" x="122" y="13" width="82" height="32"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="W8i-5D-waV">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                    </button>
                 </subviews>
             </view>
             <point key="canvasLocation" x="200.5" y="110.5"/>
