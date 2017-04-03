@@ -241,13 +241,13 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
     double max_hook_ratio = 0.0;
     unsigned snap_end = 0;
     NSPoint prev = [[path startNode] position];
-    NSLog(@"Computing error for path : %@", [path nodes]);
-//    NSLog(@"Parameters : %@", u);
+    SCLog(@"Computing error for path : %@", [path nodes]);
+//    SCLog(@"Parameters : %@", u);
     for (unsigned i = 1; i < [points count]-1; i++) {
-//        NSLog(@"Path time is %f", [u[i] floatValue]);
+//        SCLog(@"Path time is %f", [u[i] floatValue]);
         NSPoint cur = [path SCPointAtPathTime:[u[i] floatValue]];
         double const distsq = GSSquareDistance(cur, [(GSNode*)points[i] position]);
-//        NSLog(@"Square distance: %@ - %@ = %f", NSStringFromPoint(cur), NSStringFromPoint([(GSNode*)points[i] position]), distsq);
+//        SCLog(@"Square distance: %@ - %@ = %f", NSStringFromPoint(cur), NSStringFromPoint([(GSNode*)points[i] position]), distsq);
         if ( distsq > maxDistsq ) {
             maxDistsq = distsq;
             *splitPoint = i;
@@ -261,7 +261,7 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
         }
         prev = cur;
     }
-//    NSLog( @"Distance = %f tolerance = %f", sqrt(maxDistsq), tolerance);
+//    SCLog( @"Distance = %f tolerance = %f", sqrt(maxDistsq), tolerance);
 
     double const dist_ratio = sqrt(maxDistsq) / tolerance;
     double ret;
@@ -276,7 +276,7 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
 }
 
 + (GSPath*)fitCurveToPoints:(NSArray*)data tangent1:(NSPoint)tHat1 tangent2:(NSPoint)tHat2 withError:(double)error maxSegments:(double)maxSegments {
-    NSLog(@"Fitting to data: %@", data);
+    SCLog(@"Fitting to data: %@", data);
     if ([data count] < 2) return NULL;
     if ([data count] == 2) {
         return [self fitLine:data tangent1:tHat1 tangent2:tHat2];
@@ -287,10 +287,10 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
     NSUInteger splitPoint;
     NSMutableArray* u = [self chordLengthParameterize:data];
     if ([[u lastObject] floatValue] == 0.0) return NULL;
-    NSLog(@"tHat1:%@ tHat2: %@ error:%f", NSStringFromPoint(tHat1), NSStringFromPoint(tHat2), error);
-    NSLog(@"parameters: %@", u);
+    SCLog(@"tHat1:%@ tHat2: %@ error:%f", NSStringFromPoint(tHat1), NSStringFromPoint(tHat2), error);
+    SCLog(@"parameters: %@", u);
     GSPath* bez = [self generateBezierFromPoints: data withParameters:u leftTangent: tHat1 rightTangent: tHat2 error: error];
-    NSLog(@"Initial path attempt: %@", [bez nodes]);
+    SCLog(@"Initial path attempt: %@", [bez nodes]);
     u = [self reparameterize:bez throughPoints:data originalParameters:u];
     double const tolerance = sqrt(pow(2,error) + 1e-9);
     CGFloat maxErrorRatio = [self computeMaxErrorForPath:bez ThroughPoints:data parameters:u
@@ -341,7 +341,7 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
             [leftPoints addObject:[data objectAtIndex:i]];
             i++;
         }
-        NSLog(@"Left  points: %@", leftPoints);
+        SCLog(@"Left  points: %@", leftPoints);
         GSPath* left = [self fitCurveToPoints:leftPoints tangent1:tHat1 tangent2:recTHat2 withError:error maxSegments:rec_max_beziers1];
         if (!left) { return NULL; }
         i--;
@@ -349,15 +349,15 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
             [rightPoints addObject:[data objectAtIndex:i]];
             i++;
         }
-        NSLog(@"Right points: %@", rightPoints);
+        SCLog(@"Right points: %@", rightPoints);
         unsigned const rec_max_beziers2 = maxSegments - [left countOfNodes];
         GSPath* right = [self fitCurveToPoints:rightPoints tangent1:recTHat1 tangent2:tHat2 withError:error maxSegments:rec_max_beziers2];
-        NSLog(@"Left  curve: %@", [left nodes]);
+        SCLog(@"Left  curve: %@", [left nodes]);
 
         [left removeNodeAtIndex:([left countOfNodes]-1)];
-        NSLog(@"Right  curve: %@", [right nodes]);
+        SCLog(@"Right  curve: %@", [right nodes]);
         [left append:right];
-        NSLog(@"Final  curve: %@", [left nodes]);
+        SCLog(@"Final  curve: %@", [left nodes]);
         return left;
     }
     return NULL;
