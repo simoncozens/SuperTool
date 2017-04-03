@@ -188,19 +188,6 @@ bool willUndo = true;
     return [newPath countOfNodes] -1;
 }
 
-+(void)addOffcurve:(NSPoint)pos toPath:(GSPath*)p {
-    GSNode *n = [[GSNode alloc] init];
-    n.position = pos;
-    n.type = OFFCURVE;
-    [p addNode: n];
-}
-+(void)addSmooth:(NSPoint)pos toPath:(GSPath*)p {
-    GSNode *n = [[GSNode alloc] init];
-    n.position = pos;
-    n.type = CURVE; n.connection = SMOOTH;
-    [p addNode: n];
-}
-
 + (GSPath*)SCfitCurvetoOrigiPoints:(NSMutableArray*)points precision:(CGFloat)precision {
     NSUInteger pcount = [points count];
     NSPoint leftTangent = GSUnitVector(GSSubtractPoints([(GSNode*)points[1] position], [(GSNode*)points[0] position] ));
@@ -233,10 +220,10 @@ bool willUndo = true;
     if (pcount ==2) {
         GSPath* p = [[GSPath alloc] init];
         // Approximate
-        [self addSmooth:start toPath:p];
-        [self addOffcurve:GSAddPoints(start, GSScalePoint(leftTangent, dist / 3.0)) toPath:p];
-        [self addOffcurve:GSAddPoints(end, GSScalePoint(rightTangent, dist / 3.0)) toPath:p];
-        [self addSmooth:end toPath:p];
+        [p addSmooth:start];
+        [p addOffcurve:GSAddPoints(start, GSScalePoint(leftTangent, dist / 3.0))];
+        [p addOffcurve:GSAddPoints(end, GSScalePoint(rightTangent, dist / 3.0))];
+        [p addSmooth:end];
         return p;
     }
     NSUInteger splitPoint = 0;
@@ -268,9 +255,8 @@ bool willUndo = true;
         i++;
     }
     SCLog(@"Left points are %@", leftPoints);
-    [self appendCurve:
-     [self fitCurveThrough:leftPoints leftTangent:leftTangent rightTangent:centerTangent precision:precision]
-               toPath:p];
+    [p append:
+     [self fitCurveThrough:leftPoints leftTangent:leftTangent rightTangent:centerTangent precision:precision]];
     i--;
     while (i < [points count]) {
         [rightPoints addObject:[points objectAtIndex:i]];
@@ -278,9 +264,8 @@ bool willUndo = true;
     }
     SCLog(@"Right points are %@", rightPoints);
     [p removeNodeAtIndex:([p countOfNodes]-1)];
-    [self appendCurve:
-     [self fitCurveThrough:rightPoints leftTangent:GSScalePoint(centerTangent, -1.0) rightTangent:rightTangent precision:precision]
-               toPath:p];
+    [p append:
+     [self fitCurveThrough:rightPoints leftTangent:GSScalePoint(centerTangent, -1.0) rightTangent:rightTangent precision:precision]];
     SCLog(@"Final path is %@", [p nodes]);
     return p;
 }
@@ -330,17 +315,17 @@ bool willUndo = true;
     CGFloat epsilon = 1.0e-6 * dist;
     GSPath* p = [[GSPath alloc] init];
     // Approximate
-    [self addSmooth:start toPath:p];
+    [p addSmooth:start];
     SCLog(@"right Tangent = %f,%f",  rightTangent.x, rightTangent.y);
     
     if (alphaL < epsilon || alphaR < epsilon) {
-        [self addOffcurve:GSAddPoints(start, GSScalePoint(leftTangent, dist / 3.0)) toPath:p];
-        [self addOffcurve:GSAddPoints(end, GSScalePoint(rightTangent, dist / 3.0)) toPath:p];
+        [p addOffcurve:GSAddPoints(start, GSScalePoint(leftTangent, dist / 3.0))];
+        [p addOffcurve:GSAddPoints(end, GSScalePoint(rightTangent, dist / 3.0))];
     } else {
-        [self addOffcurve:GSAddPoints(start, GSScalePoint(leftTangent, alphaL)) toPath:p];
-        [self addOffcurve:GSAddPoints(end, GSScalePoint(rightTangent, alphaR)) toPath:p];
+        [p addOffcurve:GSAddPoints(start, GSScalePoint(leftTangent, alphaL))];
+        [p addOffcurve:GSAddPoints(end, GSScalePoint(rightTangent, alphaR))];
     }
-    [self addSmooth:end toPath:p];
+    [p addSmooth:end];
     return p;
 }
 
@@ -413,52 +398,12 @@ bool willUndo = true;
 - (void)windowDidResignKey:(NSNotification *)notification {
     if ([notification object] == simplifyWindow) [simplifyWindow close];
 }
-+ (NSPoint)qPrime:(GSPath*)bez atTime:(CGFloat)t {
-    return GSAddPoints(
-                       GSAddPoints(
-                                   GSScalePoint(
-                                                GSSubtractPoints([[bez nodeAtIndex:1] position], [[bez nodeAtIndex:0] position]),
-                                                3*(1.0-t)*(1.0-t)
-                                                ),
-                                   GSScalePoint(
-                                                GSSubtractPoints([[bez nodeAtIndex:2] position], [[bez nodeAtIndex:1] position]),
-                                                6*(1.0-t) * t
-                                                )
-                                   ),
-                       GSScalePoint(
-                                    GSSubtractPoints([[bez nodeAtIndex:3] position], [[bez nodeAtIndex:2] position]),
-                                    3 * t * t
-                                    )
-                       );
-}
-
-+ (NSPoint)qPrimePrime:(GSPath*)bez atTime:(CGFloat)t {
-    NSPoint alpha = GSScalePoint(
-                                 GSAddPoints(
-                                             GSSubtractPoints([[bez nodeAtIndex:2] position], GSScalePoint([[bez nodeAtIndex:1] position], 2)),
-                                             [[bez nodeAtIndex:0] position]
-                                             ),
-                                 6*(1.0-t)
-                                 );
-    NSPoint beta =GSScalePoint(
-                               GSAddPoints(
-                                           GSSubtractPoints([[bez nodeAtIndex:3] position], GSScalePoint([[bez nodeAtIndex:2] position], 2)),
-                                           [[bez nodeAtIndex:1] position]
-                                           ),
-                               6*(t)
-                               );
-    return GSAddPoints(alpha, beta);
-}
 
 static inline NSPoint SCMultiply(NSPoint P1, NSPoint P2) {
     return NSMakePoint(P1.x * P2.x, P1.y*P2.y);
 }
 static inline CGFloat SCSum(NSPoint P1) {
     return P1.x + P1.y;
-}
-
-+ (void)appendCurve:(GSPath*)source toPath:(GSPath*)target {
-    [target addNodes:[source nodes]];
 }
 
 + (NSMutableArray*)reparameterize:(GSPath*)path throughPoints:(NSMutableArray*)points originalParameters:(NSMutableArray*)parameters {
@@ -471,10 +416,11 @@ static inline CGFloat SCSum(NSPoint P1) {
                                                    [[path nodeAtIndex:2] position],
                                                    [[path nodeAtIndex:3] position],
                                                    u), point);
-        NSPoint qPrime = [self qPrime:path atTime:u];
+        NSPoint qPrime = [path qPrimeAtTime:u];
+        NSPoint qPrimePrime = [path qPrimePrimeAtTime:u];
         CGFloat numerator = SCSum(SCMultiply(d,qPrime));
         CGFloat denominator = SCSum(
-                                    GSAddPoints(SCMultiply(qPrime, qPrime), SCMultiply(d, [self qPrimePrime:path atTime:u]))
+                                    GSAddPoints(SCMultiply(qPrime, qPrime), SCMultiply(d, qPrimePrime))
                                     );
         if (fabs(denominator) <= FLT_EPSILON) {
             [result addObject:[NSNumber numberWithFloat:u]];

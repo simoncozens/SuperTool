@@ -15,6 +15,9 @@
 #import <GlyphsCore/GSPath.h>
 #import <GlyphsCore/GSGeometrieHelper.h>
 #import "GSNode+SCNodeUtils.h"
+#import "GSPath+SCPathUtils.h"
+
+//#define DEBUG_MODE
 
 #ifdef DEBUG_MODE
 #define SCLog( ... ) NSLog( ##__VA_ARGS__ )
