@@ -13,7 +13,7 @@
 #define B2(u) ( 3 * u * u  *  ( 1.0 - u ) )
 #define B3(u) ( u * u * u )
 
-#define DEBUG_MODE
+//#define DEBUG_MODE
 
 #ifdef DEBUG_MODE
 #define SCLog NSLog
@@ -35,7 +35,7 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
 + (GSPath*)fitLine:(NSArray*)data tangent1:(NSPoint)tHat1 tangent2:(NSPoint)tHat2 {
     NSPoint p0 = [(GSNode*)[data firstObject] position];
     NSPoint p3 = [(GSNode*)[data lastObject] position];
-    double dist = GSDistance(p0,p3);
+    double dist = GSDistance(p0,p3) / 3.0;
     NSPoint p1,p2;
     p1 = is_zero(tHat1) ? GSScalePoint(GSAddPoints(GSScalePoint(p0, 2), p3), 1/3.0) :
     GSAddPoints(p0, GSScalePoint(tHat1, dist));
@@ -107,6 +107,7 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
     [bez addObject:[NSNull null]];
     [bez addObject:[NSNull null]];
     [bez addObject:[NSValue valueWithPoint:end]];
+    SCLog(@"tHat1= %@, tHat2= %@",NSStringFromPoint(tHat1), NSStringFromPoint(tHat2));
     for (unsigned i = 0; i < [data count]; i++) {
         double const b0 = B0([uPrime[i] floatValue]);
         double const b1 = B1([uPrime[i] floatValue]);
@@ -156,13 +157,14 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
             }
         }
     }
-    if ( alpha_l < 1.0e-6 ||
-        alpha_r < 1.0e-6   )
-    {
+//    if ( alpha_l < 1.0e-6 ||
+//        alpha_r < 1.0e-6   )
+//    {
         alpha_l = alpha_r = GSDistance(start,end) / 3.0;
-    }
+//    }
     bez[1] = [NSValue valueWithPoint: GSAddPoints(start, GSScalePoint(tHat1, alpha_l))];
     bez[2] = [NSValue valueWithPoint: GSAddPoints(end, GSScalePoint(tHat2, alpha_r))];
+    SCLog(@"alpha_l = %f, alpha_r = %f, bez = %@", alpha_l, alpha_r, bez);
     return bez;
 }
 
@@ -220,11 +222,12 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
 
 + (NSMutableArray*)reparameterize:(GSPath*)path throughPoints:(NSArray*)points originalParameters:(NSArray*)parameters {
     NSMutableArray *result = [[NSMutableArray alloc] init];
-    for (int i=0; i < [points count]; i++) {
+    for (int i=0; i < [points count]-1; i++) {
         CGFloat u = [parameters[i] floatValue];
         NSPoint point = [(GSNode*)points[i] position];
         [result addObject:[NSNumber numberWithFloat:[self newtonRaphsonFind:path point:point parameter:u]]];
     }
+    [result addObject:@1.0];
     return result;
 }
 
@@ -241,7 +244,7 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
     double max_hook_ratio = 0.0;
     unsigned snap_end = 0;
     NSPoint prev = [[path startNode] position];
-    SCLog(@"Computing error for path : %@", [path nodes]);
+//    SCLog(@"Computing error for path : %@", [path nodes]);
 //    SCLog(@"Parameters : %@", u);
     for (unsigned i = 1; i < [points count]-1; i++) {
 //        SCLog(@"Path time is %f", [u[i] floatValue]);
@@ -271,7 +274,7 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
 //        ret = -max_hook_ratio;
 //        *splitPoint = snap_end - 1;
 //    }
-    SCLog( @"Computed max error = %f split point = %lu", ret, (unsigned long)*splitPoint);
+//    SCLog( @"Computed max error = %f split point = %lu", ret, (unsigned long)*splitPoint);
     return ret;
 }
 
