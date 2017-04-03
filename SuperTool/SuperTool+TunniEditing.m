@@ -15,15 +15,22 @@ const float HANDLE_SIZE = 5.0;
 NSMenuItem* drawTunni;
 NSString* drawTunniDefault = @"org.simon-cozens.SuperTool.drawingTunni";
 
+const float DEFAULT_ZOOM_THRESHOLD = 2.0;
+NSString* lineZoomDefault = @"org.simon-cozens.SuperTool.tunniZoomThreshold";
+
 - (void) initTunni {
     drawTunni = [[NSMenuItem alloc] initWithTitle:@"Show Tunni lines" action:@selector(displayTunniState) keyEquivalent:@""];
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:drawTunniDefault]boolValue]) {
         [drawTunni setState:NSOnState];
     }
+    float tz = [[[NSUserDefaults standardUserDefaults] objectForKey:lineZoomDefault]floatValue];
+    if (!tz) {
+        [[NSUserDefaults standardUserDefaults] setFloat:DEFAULT_ZOOM_THRESHOLD forKey:lineZoomDefault];
+    }
 }
 
 - (void) addTunniToContextMenu:(NSMenu*)theMenu {
-    [theMenu insertItem:drawTunni atIndex:1];
+    [theMenu insertItem:drawTunni atIndex:0];
 }
 
 - (void) displayTunniState {
@@ -46,7 +53,7 @@ NSString* drawTunniDefault = @"org.simon-cozens.SuperTool.drawingTunni";
     NSPoint start = [_editViewController.graphicView getActiveLocation: theEvent];
     /* Would love to use the block here but variable scoping rules don't allow it */
     GSPath *p;
-    
+    float tunniZoomThreshold = [[[NSUserDefaults standardUserDefaults] objectForKey:lineZoomDefault]floatValue];
     for (p in currentLayer.paths) {
         NSArray* seg;
         for (seg in p.segments) {
@@ -66,7 +73,7 @@ NSString* drawTunniDefault = @"org.simon-cozens.SuperTool.drawingTunni";
                     [[currentLayer undoManager] beginUndoGrouping];
                     return;
                 }
-                if (GSDistanceOfPointFromLineSegment(start, p2, p3) <= 2.0) {
+                if (GSDistanceOfPointFromLineSegment(start, p2, p3) <= tunniZoomThreshold) {
                     if (GSDistance(start, p2) <= HANDLE_SIZE/2 || GSDistance(start, p3) <= HANDLE_SIZE/2) {
                         // Actually dragging the handle, not the line.
                         return [super mouseDown:theEvent];
@@ -137,6 +144,7 @@ NSString* drawTunniDefault = @"org.simon-cozens.SuperTool.drawingTunni";
     NSMutableOrderedSet* segments = [[NSMutableOrderedSet alloc] init];
     GSNode* n;
     for (n in [currentLayer selection]) {
+        if (![n isKindOfClass:[GSNode class]]) continue;
         // Find the segment for this node and add it to the set
         if ([n type] == OFFCURVE && [[n nextNode] type] == OFFCURVE) {
             // Add prev, this, next, and next next to the set
@@ -181,8 +189,10 @@ NSString* drawTunniDefault = @"org.simon-cozens.SuperTool.drawingTunni";
     CGFloat eDistance = GSDistance(p4, tunniPoint);
     CGFloat currentZoom =  [_editViewController.graphicView scale];
     NSColor* col;
-    if (currentZoom < 2.0)
-        col = [NSColor colorWithCalibratedRed: 0 green:0 blue:1 alpha:currentZoom-1.0];
+    float tunniZoomThreshold = [[[NSUserDefaults standardUserDefaults] objectForKey:lineZoomDefault]floatValue];
+
+    if (currentZoom < tunniZoomThreshold)
+        col = [NSColor colorWithCalibratedRed: 0 green:0 blue:1 alpha:currentZoom-tunniZoomThreshold/2.0];
     else
         col = [NSColor blueColor];
     [col set];
