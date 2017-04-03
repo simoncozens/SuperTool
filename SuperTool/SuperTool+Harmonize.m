@@ -15,6 +15,7 @@
 }
 
 - (void) harmonize:(GSNode*)a3 {
+    if (![a3 isKindOfClass:[GSNode class]]) return;
     if ([a3 connection] != SMOOTH) return;
     GSNode* a2 = [a3 prevNode]; if ([a2 type] != OFFCURVE) return;
     GSNode* a1 = [a2 prevNode]; if ([a2 type] != OFFCURVE) return;

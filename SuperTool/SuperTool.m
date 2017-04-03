@@ -102,7 +102,7 @@ const int SAMPLE_SIZE = 200;
     GSNode* n;
     NSOrderedSet* sel = [currentLayer selection];
     for (n in sel) {
-        if ([n type] != OFFCURVE) {
+        if ([n isKindOfClass:[GSNode class]] && [n type] != OFFCURVE) {
             if ([sel containsObject:[n nextOnCurve]]) return TRUE;
             if ([sel containsObject:[n prevOnCurve]]) return TRUE;
         }
@@ -114,6 +114,7 @@ const int SAMPLE_SIZE = 200;
     GSLayer* currentLayer = [_editViewController.graphicView activeLayer];
     GSNode* n;
     for (n in [currentLayer selection]) {
+        if (![n isKindOfClass:[GSNode class]]) continue;
         if ([n type] == OFFCURVE && [[n nextNode] type] == OFFCURVE) {
             return TRUE;
         } else if ([n type] == OFFCURVE && [[n prevNode] type] == OFFCURVE) {

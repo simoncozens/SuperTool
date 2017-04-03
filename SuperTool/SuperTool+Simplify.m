@@ -46,6 +46,7 @@
     GSNode *n, *nn;
     NSMutableArray *mySelection = [[NSMutableArray alloc] init];
     for (n in sel) {
+        if (![n isKindOfClass:[GSNode class]]) continue;
         if ([n type] == OFFCURVE) continue;
         GSPath* rerootedPath;
         GSPath* origPath = [n parent];
