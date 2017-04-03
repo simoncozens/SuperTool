@@ -13,7 +13,7 @@
 - (void)initCurvature;
 - (void)addCurvatureToContextMenu:(NSMenu*)theMenu;
 - (void)drawCurvatureForSegment:(NSArray*)seg;
-- (void) displayCurvatureState;
+- (void) displayCurvatureState:(id)sender;
 - (void) drawCurvatureBackground:(GSLayer*)Layer;
 
 @end
