@@ -39,6 +39,8 @@
     __weak IBOutlet NSButton *simplifyOK;
     __weak IBOutlet NSButton *simplifyCancel;
     __weak IBOutlet NSSlider *simplifySlider;
+    __weak IBOutlet NSSlider *cornerSlider;
+
 }
 
 

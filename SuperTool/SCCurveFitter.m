@@ -26,10 +26,10 @@ boolean_t is_zero(NSPoint t) { return t.x == 0 && t.y == 0; }
 @implementation SCCurveFitter
 const NSPoint unconstrained_tangent = {.x = 0, .y =0};
 
-+ (GSPath*)fitCurveToPoints:(NSArray*)data withError:(double)error maxSegments:(double)maxSegments {
++ (GSPath*)fitCurveToPoints:(NSArray*)data withError:(double)error cornerTolerance:(double)corner maxSegments:(double)maxSegments {
     data = [ [[NSOrderedSet alloc] initWithArray:data] array]; // Deduplicate
     if ([data count] < 2) return NULL;
-    return [self fitCurveToPoints:data tangent1:unconstrained_tangent tangent2:unconstrained_tangent withError:error maxSegments:maxSegments ];
+    return [self fitCurveToPoints:data tangent1:unconstrained_tangent tangent2:unconstrained_tangent withError:error cornerTolerance:(double)corner maxSegments:maxSegments ];
 }
 
 + (GSPath*)fitLine:(NSArray*)data tangent1:(NSPoint)tHat1 tangent2:(NSPoint)tHat2 {
@@ -231,7 +231,7 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
     return result;
 }
 
-+ (double)computeHookFrom:(NSPoint)prev To:(NSPoint)cur parameter:(CGFloat)u path:(GSPath*)path tolerance:(double)tolerance {
++ (double)computeHookFrom:(NSPoint)prev To:(NSPoint)cur parameter:(CGFloat)u path:(GSPath*)path cornerTolerance:(double)tolerance {
     NSPoint p = [path pointAtPathTime:u];
     CGFloat dist = GSDistance(GSLerp(prev,cur,0.5),p);
     if (dist < tolerance) return 0;
@@ -239,7 +239,7 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
     return dist / allowed;
 }
 
-+ (double)computeMaxErrorForPath:(GSPath*) path ThroughPoints:(NSArray*)points parameters:(NSMutableArray*)u tolerance:(double)tolerance returningSplitPoint:(NSUInteger*)splitPoint {
++ (double)computeMaxErrorForPath:(GSPath*) path ThroughPoints:(NSArray*)points parameters:(NSMutableArray*)u tolerance:(double)tolerance cornerTolerance:(double)corner returningSplitPoint:(NSUInteger*)splitPoint {
     double maxDistsq = 0.0; /* Maximum error */
     double max_hook_ratio = 0.0;
     unsigned snap_end = 0;
@@ -257,7 +257,7 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
         }
         double const hook_ratio = [self computeHookFrom:prev To:cur
                                               parameter:.5 * ([u[i - 1] floatValue] + [u[i] floatValue])
-                                               path:path tolerance:tolerance];
+                                               path:path cornerTolerance:corner];
         if (max_hook_ratio < hook_ratio) {
             max_hook_ratio = hook_ratio;
             snap_end = i;
@@ -268,17 +268,17 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
 
     double const dist_ratio = sqrt(maxDistsq) / tolerance;
     double ret;
-//    if (max_hook_ratio <= dist_ratio) {
+    if (max_hook_ratio <= dist_ratio) {
         ret = dist_ratio;
-//    } else {
-//        ret = -max_hook_ratio;
-//        *splitPoint = snap_end - 1;
-//    }
-//    SCLog( @"Computed max error = %f split point = %lu", ret, (unsigned long)*splitPoint);
+    } else {
+        ret = -max_hook_ratio;
+        *splitPoint = snap_end - 1;
+    }
+    NSLog( @"Computed max error = %f split point = %lu", ret, (unsigned long)*splitPoint);
     return ret;
 }
 
-+ (GSPath*)fitCurveToPoints:(NSArray*)data tangent1:(NSPoint)tHat1 tangent2:(NSPoint)tHat2 withError:(double)error maxSegments:(double)maxSegments {
++ (GSPath*)fitCurveToPoints:(NSArray*)data tangent1:(NSPoint)tHat1 tangent2:(NSPoint)tHat2 withError:(double)error cornerTolerance:(double)corner maxSegments:(double)maxSegments {
     SCLog(@"Fitting to data: %@", data);
     if ([data count] < 2) return NULL;
     if ([data count] == 2) {
@@ -296,8 +296,9 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
     SCLog(@"Initial path attempt: %@", [bez nodes]);
     u = [self reparameterize:bez throughPoints:data originalParameters:u];
     double const tolerance = sqrt(pow(2,error) + 1e-9);
+    corner = sqrt(pow(2,corner));
     CGFloat maxErrorRatio = [self computeMaxErrorForPath:bez ThroughPoints:data parameters:u
-                                              tolerance: tolerance
+                                              tolerance: tolerance cornerTolerance:corner
                                     returningSplitPoint:&splitPoint];
     if ( fabs(maxErrorRatio) <= 1.0 ) { return bez; }
     if ( 0.0 <= maxErrorRatio && maxErrorRatio <= 3.0 ) {
@@ -305,7 +306,7 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
             bez = [self generateBezierFromPoints: data withParameters:u leftTangent: tHat1 rightTangent: tHat2 error: error];
             u = [self reparameterize:bez throughPoints:data originalParameters:u];
             maxErrorRatio = [self computeMaxErrorForPath:bez ThroughPoints:data parameters:u
-                                                      tolerance: tolerance
+                                                      tolerance: tolerance cornerTolerance:corner
                                             returningSplitPoint:&splitPoint];
             if ( fabs(maxErrorRatio) <= 1.0 ) { return bez; }
         }
@@ -316,13 +317,14 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
             if (is_zero(tHat1)) {
                 ++splitPoint;
             } else {
-                return [self fitCurveToPoints:data tangent1:unconstrained_tangent tangent2:tHat2 withError:error maxSegments:maxSegments];
+                return [self fitCurveToPoints:data tangent1:unconstrained_tangent tangent2:tHat2 withError:error cornerTolerance:corner maxSegments:maxSegments];
             }
         } else if (splitPoint == [data count] - 1) {
             if (is_zero(tHat2)) {
                 --splitPoint;
             } else {
-                return [self fitCurveToPoints:data tangent1:tHat1 tangent2:unconstrained_tangent withError:error maxSegments:maxSegments];            }
+                return [self fitCurveToPoints:data tangent1:tHat1 tangent2:unconstrained_tangent withError:error cornerTolerance:corner maxSegments:maxSegments];
+            }
         }
     }
     
@@ -345,7 +347,7 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
             i++;
         }
         SCLog(@"Left  points: %@", leftPoints);
-        GSPath* left = [self fitCurveToPoints:leftPoints tangent1:tHat1 tangent2:recTHat2 withError:error maxSegments:rec_max_beziers1];
+        GSPath* left = [self fitCurveToPoints:leftPoints tangent1:tHat1 tangent2:recTHat2 withError:error cornerTolerance:corner maxSegments:rec_max_beziers1];
         if (!left) { return NULL; }
         i--;
         while (i < [data count]) {
@@ -354,7 +356,7 @@ const NSPoint unconstrained_tangent = {.x = 0, .y =0};
         }
         SCLog(@"Right points: %@", rightPoints);
         unsigned const rec_max_beziers2 = maxSegments - [left countOfNodes];
-        GSPath* right = [self fitCurveToPoints:rightPoints tangent1:recTHat1 tangent2:tHat2 withError:error maxSegments:rec_max_beziers2];
+        GSPath* right = [self fitCurveToPoints:rightPoints tangent1:recTHat1 tangent2:tHat2 withError:error cornerTolerance:corner  maxSegments:rec_max_beziers2];
         SCLog(@"Left  curve: %@", [left nodes]);
 
         [left removeNodeAtIndex:([left countOfNodes]-1)];

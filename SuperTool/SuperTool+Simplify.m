@@ -120,7 +120,8 @@ bool willUndo = true;
 }
 
 - (void) doSimplify {
-    CGFloat reducePercentage = [simplifySlider floatValue];
+    CGFloat reducePercentage = [simplifySlider maxValue] - [simplifySlider floatValue] + [simplifySlider minValue];
+    CGFloat cornerTolerance = [cornerSlider maxValue] - [cornerSlider floatValue] + [cornerSlider minValue];
     int i = 0;
     //    SCLog(@"Seg set is %@", simplifySegSet);
     //    SCLog(@"copied paths is %@", copiedPaths);
@@ -137,7 +138,7 @@ bool willUndo = true;
             SCLog(@"Parent dead before simplifying!");
             return;
         }
-        GSPath *newPath = [SCCurveFitter fitCurveToPoints:s withError:reducePercentage maxSegments:240];
+        GSPath *newPath = [SCCurveFitter fitCurveToPoints:s withError:reducePercentage cornerTolerance: cornerTolerance maxSegments:240];
         
         NSUInteger newend = [self splice:newPath into:p at:startEnd];
         SCLog(@"New end is %lu",(unsigned long)newend );
@@ -185,6 +186,7 @@ bool willUndo = true;
     if ([[[path nodeAtIndex:splice.location] prevNode] type] != OFFCURVE) {
         [path nodeAtIndex:splice.location].type = LINE;
     }
+    [path checkConnections];
     SCLog(@"spliced path: %@", [path nodes]);
     return [newPath countOfNodes] -1;
 }

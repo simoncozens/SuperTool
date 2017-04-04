@@ -44,6 +44,9 @@ const int SAMPLE_SIZE = 200;
     [simplifySlider setTarget:self];
     [simplifyWindow setDelegate:self];
     [simplifySlider setAction:@selector(doSimplify)];
+    [cornerSlider setTarget:self];
+    [cornerSlider setAction:@selector(doSimplify)];
+
     [simplifyOK setTarget: self];
     [simplifyOK setAction:@selector(commitSimplify)];
     [simplifyCancel setTarget: self];

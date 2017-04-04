@@ -18,7 +18,7 @@
 #import "GSPath+SCPathUtils.h"
 
 @interface SCCurveFitter : NSObject
-+ (GSPath*)fitCurveToPoints:(NSArray*)data withError:(double)error maxSegments:(double)maxSegments;
++ (GSPath*)fitCurveToPoints:(NSArray*)data withError:(double)error cornerTolerance:(double)corner maxSegments:(double)maxSegments;
 + (GSPath*) generateBezierFromPoints:(NSArray*)data withParameters:(NSArray*)u leftTangent: (NSPoint)tHat1 rightTangent: (NSPoint)tHat2 error:(double) error;
 
 + (NSMutableArray*)estimateLengths:(NSArray*)data parameters:(NSArray*)u left:(NSPoint)est_tHat1 right:(NSPoint)est_tHat2;
