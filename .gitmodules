@@ -1,0 +1,3 @@
+[submodule "SuperTool/SCGlyphsLib"]
+	path = SuperTool/SCGlyphsLib
+	url = git@github.com:simoncozens/SCGlyphsLib.git
