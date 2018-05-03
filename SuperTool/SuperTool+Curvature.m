@@ -7,6 +7,7 @@
 //
 
 #import "SuperTool+Curvature.h"
+#import <AppKit/AppKit.h>
 
 @implementation SuperTool (Curvature)
 
@@ -22,6 +23,14 @@ NSString* drawSpotsDefault = @"org.simon-cozens.SuperTool.drawingSpots";
 NSMenuItem* fade;
 NSString* fadeDefault = @"org.simon-cozens.SuperTool.dontFade";
 
+NSMenuItem* flip;
+NSString* flipDefault = @"org.simon-cozens.SuperTool.flipCurves";
+
+NSView* combScaleSliderView;
+NSSlider* combScaleSlider;
+NSMenuItem* combScaleSliderMenuItem;
+const float CombScale = 100;
+NSString* combScaleDefault = @"org.simon-cozens.SuperTool.combScale";
 
 - (void)initCurvature {
     drawCurves = [[NSMenuItem alloc] initWithTitle:@"Show curvature" action:@selector(displayCurvatureState:) keyEquivalent:@""];
@@ -32,6 +41,31 @@ NSString* fadeDefault = @"org.simon-cozens.SuperTool.dontFade";
     [drawSpots setRepresentedObject:drawSpotsDefault];
     fade = [[NSMenuItem alloc] initWithTitle:@"Hide pathological curves" action:@selector(displayCurvatureState:) keyEquivalent:@""];
     [fade setRepresentedObject:fadeDefault];
+
+    float cs = [[[NSUserDefaults standardUserDefaults] objectForKey:combScaleDefault]floatValue];
+    if (!cs) {
+        [[NSUserDefaults standardUserDefaults] setFloat:CombScale forKey:combScaleDefault];
+    }
+    combScaleSliderView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 200, 25)];
+    NSTextField *textField = [[NSTextField alloc] initWithFrame:NSMakeRect(25,0,75,25)];
+    [textField setFont: [NSFont menuFontOfSize:0]];
+    [textField setStringValue:@"Volume"];
+    [textField setBezeled:NO];
+    [textField setDrawsBackground:NO];
+    [textField setEditable:NO];
+    [textField setSelectable:NO];
+    combScaleSlider = [[NSSlider alloc] initWithFrame:NSMakeRect(75,0,125,25)];
+    [combScaleSlider setMinValue:10];
+    [combScaleSlider setMaxValue:200];
+    [combScaleSlider setFloatValue:cs];
+    [combScaleSlider setTarget:self];
+    [combScaleSlider setAction:@selector(setCombScale:)];
+    [combScaleSliderView addSubview:textField];
+    [combScaleSliderView addSubview:combScaleSlider];
+    combScaleSliderMenuItem = [[NSMenuItem alloc]init];
+    [combScaleSliderMenuItem setView:combScaleSliderView];
+    flip = [[NSMenuItem alloc] initWithTitle:@"Invert curve" action:@selector(displayCurvatureState:) keyEquivalent:@""];
+    [flip setRepresentedObject:flipDefault];
 
     
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:drawCurvesDefault]boolValue]) {
@@ -55,9 +89,16 @@ NSString* fadeDefault = @"org.simon-cozens.SuperTool.dontFade";
     [theMenu insertItem:drawRainbows atIndex:0];
     [theMenu insertItem:drawSpots atIndex:0];
     [theMenu insertItem:fade atIndex:0];
+    [theMenu insertItem:flip atIndex:0];
+    [theMenu insertItem:combScaleSliderMenuItem atIndex:0];
     [theMenu insertItem:drawCurves atIndex:0];
 }
 
+-(void)setCombScale:(id)sender {
+    [[NSUserDefaults standardUserDefaults] setFloat:[combScaleSlider floatValue] forKey:combScaleDefault];
+    [_editViewController.graphicView setNeedsDisplay: TRUE];
+
+}
 - (void) displayCurvatureState:(id)sender {
     if ([sender state] == NSOnState) {
         [sender setState:NSOffState];
@@ -73,9 +114,17 @@ NSString* fadeDefault = @"org.simon-cozens.SuperTool.dontFade";
     BOOL doDrawCurves = [drawCurves state] == NSOnState;
     BOOL doDrawRainbows = [drawRainbows state] == NSOnState;
     BOOL doDrawSpots = [drawSpots state] == NSOnState;
-
+    __block float maxC = 0.0;
+    if (doDrawCurves) {
+        [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSArray* seg) {
+            float thisC = [self maxCurvatureForSegment:seg];
+            NSLog(@"Max curve for segments: %f", thisC);
+            if (thisC > maxC) maxC = thisC;
+        }];
+    }
+    NSLog(@"Max curve for glyph: %f", maxC);
     [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSArray* seg) {
-        if (doDrawCurves) { [self drawCurvatureForSegment:seg]; }
+        if (doDrawCurves) { [self drawCurvatureForSegment:seg maxCurvature:maxC]; }
         if (doDrawRainbows) { [self drawRainbowsForSegment:seg]; }
     }];
     if (doDrawSpots) { [self drawSpotsForLayer:Layer]; }
@@ -137,7 +186,22 @@ NSString* fadeDefault = @"org.simon-cozens.SuperTool.dontFade";
     }
 }
 
-- (void)drawCurvatureForSegment:(NSArray*)seg {
+- (float)maxCurvatureForSegment:(NSArray*)seg {
+    NSPoint p1 = [seg[0] pointValue];
+    NSPoint p2 = [seg[1] pointValue];
+    NSPoint p3 = [seg[2] pointValue];
+    NSPoint p4 = [seg[3] pointValue];
+    float maxC = 0.0;
+    for (float t =0.0 ; t<=1.0; t+= 0.02) {
+        CGFloat c = sqrt(curvatureSquaredForT(p1,p2,p3,p4,t));
+        if (c > maxC) {
+            maxC = c;
+        }
+    }
+    return maxC;
+}
+
+- (void)drawCurvatureForSegment:(NSArray*)seg maxCurvature:(float)maxC{
     NSPoint p1 = [seg[0] pointValue];
     NSPoint p2 = [seg[1] pointValue];
     NSPoint p3 = [seg[2] pointValue];
@@ -150,23 +214,25 @@ NSString* fadeDefault = @"org.simon-cozens.SuperTool.dontFade";
     NSColor* first = [NSColor colorWithCalibratedRed:0.1 green:0.1 blue:0.1 alpha:0.3];
     NSColor* emptyRed = [NSColor colorWithCalibratedRed:1.0 green:0 blue:0 alpha:alwaysShow?0.1:0];
     NSColor* second = [first copy];
-    float maxC = 0.0;
-    float maxAngle = 0;
-    while (t<=1.0) {
+    float combScale = [[[NSUserDefaults standardUserDefaults] objectForKey:combScaleDefault]floatValue];
+    bool flipComb = [[[NSUserDefaults standardUserDefaults] objectForKey:flipDefault]boolValue];
+
+    combScale /= 5;
+    combScale = combScale * combScale * (flipComb ? -1 : 1);
+    combScale /= maxC;
+    float thisMaxC =0.0;
+    for (t =0.0 ; t<=1.0; t+= 0.02) {
         NSPoint normal = normalForT(p1,p2,p3,p4, t);
         CGFloat c = sqrt(curvatureSquaredForT(p1,p2,p3,p4,t));
-        if (c > maxC) {
-            maxC = c;
-            maxAngle = GSAngleOfVector(normal);
-        }
+        if (c > thisMaxC) thisMaxC = c;
         if (c <= 10.0) {
-            NSPoint end = GSAddPoints(GSPointAtTime(p1,p2,p3,p4, t), GSScalePoint(normal, 1000*c));
+            NSPoint end = GSAddPoints(GSPointAtTime(p1,p2,p3,p4, t), GSScalePoint(normal, combScale*c));
             [path setLineWidth: 1];
             [path lineToPoint: end];
         }
         t+= 0.02;
     }
-    second = [second blendedColorWithFraction:maxC*20 ofColor:emptyRed];
+    second = [second blendedColorWithFraction:thisMaxC*20 ofColor:emptyRed];
     [second set];
     [path lineToPoint: GSPointAtTime(p1,p2,p3,p4, 1)];
     [path curveToPoint:p1 controlPoint1:p3 controlPoint2:p2];
