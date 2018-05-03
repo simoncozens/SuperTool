@@ -69,4 +69,46 @@
 }
 
 
++ (CGFloat) segLength: (GSPath*)p segId:(NSInteger)segId from:(CGFloat)t1 to:(CGFloat)t2 {
+    NSArray* seg = p.segments[segId];
+    if ([ seg count] == 2) {
+        NSPoint start = [[seg objectAtIndex:0] pointValue];
+        NSPoint end = [[seg objectAtIndex:1] pointValue];
+        CGFloat x1 = start.x + (end.x-start.x)*fmod(t1,1.0);
+        CGFloat y1 = start.y + (end.y-start.y)*fmod(t1,1.0);
+        CGFloat x2 = start.x + (end.x-start.x)*fmod(t2,1.0);
+        CGFloat y2 = start.y + (end.y-start.y)*fmod(t2,1.0);
+        return sqrtf( (float)(((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2))));
+    } else {
+        NSPoint o1, o2, o3, o4;
+        NSPoint i1 = [[seg objectAtIndex:0] pointValue];
+        NSPoint i2 = [[seg objectAtIndex:1] pointValue];
+        NSPoint i3 = [[seg objectAtIndex:2] pointValue];
+        NSPoint i4 = [[seg objectAtIndex:3] pointValue];
+        GSSegmentBetweenPoints(i1,i2,i3,i4, &o1, &o2, &o3, &o4, GSPointAtTime(i1,i2,i3,i4,t1),GSPointAtTime(i1,i2,i3,i4,t2));
+        return GSLengthOfSegment(o1,o2,o3,o4);
+    }
+}
+
+
++ (CGFloat) pathLength: (SCPathTime*)start to: (SCPathTime*) end {
+    SCPathTime *p1, *p2;
+    if (start->segId > end->segId || (start->segId == end->segId && start->t > end->t)) {
+        p1 = end; p2 = start;
+    } else {
+        p1 = start; p2 = end;
+    }
+    NSInteger segId = p1->segId;
+    CGFloat total = 0;
+    CGFloat t = p1->t;
+    while (segId < p2->segId) {
+        total += [self segLength: p1->path segId:segId from:t to:1];
+        segId++;
+        t = 0;
+    }
+    total += [self segLength:p1->path segId:segId from:t to:p2->t];
+    return total;
+}
+
+
 @end

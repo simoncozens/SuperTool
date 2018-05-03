@@ -19,4 +19,5 @@
 - (int) compareWith:(SCPathTime*)t2;
 - (void) stepTimeBy:(float)step;
 - (NSPoint) point;
++ (CGFloat) pathLength: (SCPathTime*)start to: (SCPathTime*) end;
 @end
