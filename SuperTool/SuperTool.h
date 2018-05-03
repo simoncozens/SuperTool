@@ -16,6 +16,7 @@
 #import <GlyphsCore/GSGeometrieHelper.h>
 #import "GSNode+SCNodeUtils.h"
 #import "GSPath+SCPathUtils.h"
+#import "SCPathTime.h"
 
 //#define DEBUG_MODE
 
@@ -24,6 +25,18 @@
 #else
 #define SCLog( ... )
 #endif
+
+
+typedef enum {
+    DRAWING_START,
+    DRAWING_END
+} TOOL_STATE ;
+
+typedef enum {
+    MEASURE_CLOSEST,
+    MEASURE_CORRESPONDING
+} MEASURE_MODE ;
+
 
 @interface SuperTool : GSToolSelect <NSWindowDelegate> {
     NSMutableArray* simplifySegSet;
@@ -40,6 +53,18 @@
     __weak IBOutlet NSButton *simplifyCancel;
     __weak IBOutlet NSSlider *simplifySlider;
     __weak IBOutlet NSSlider *cornerSlider;
+    
+    // Callipers
+    GSLayer* callipersLayer;
+    SCPathTime* segStart1;
+    SCPathTime* segStart2;
+    SCPathTime* segEnd1;
+    SCPathTime* segEnd2;
+    long cacheMin;
+    long cacheMax;
+    long cacheAvg;
+    TOOL_STATE tool_state;
+    MEASURE_MODE measure_mode;
 
 }
 

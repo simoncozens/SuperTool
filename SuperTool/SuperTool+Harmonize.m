@@ -7,6 +7,7 @@
 //
 
 #import "SuperTool+Harmonize.h"
+#import "SuperTool+TunniEditing.h"
 
 @implementation SuperTool (Harmonize)
 
@@ -38,6 +39,7 @@
 
 - (void) harmonize {
     GSLayer* currentLayer = [_editViewController.graphicView activeLayer];
+    [self balance];
     GSNode* n;
     if ([[currentLayer selection] count] >0) {
         for (n in [currentLayer selection]) {
@@ -51,6 +53,7 @@
             }
         }
     }
+    [self balance];
 }
 
 @end

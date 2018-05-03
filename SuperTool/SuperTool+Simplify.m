@@ -160,12 +160,14 @@ bool willUndo = true;
     SCLog(@"Splicing into path %@, at range %lu-%lu", path, (unsigned long)splice.location, (unsigned long)NSMaxRange(splice));
     long j = NSMaxRange(splice);
     while (j >= 0 && j >= splice.location) {
-        [path removeNodeAtIndex:j];
+//        [path removeNodeAtIndex:j];
+        [path removeObjectFromNodesAtIndex:j];
         j--;
     }
     for (n in [newPath nodes]) {
         GSNode *n2 = [n copy];
-        [path insertNode:n2 atIndex:++j];
+        [path insertObject:n2 inNodesAtIndex:++j];
+//        [path insertNode:n2 atIndex:++j];
     }
     splice.length =  [newPath countOfNodes] -1;
     j = splice.location;
