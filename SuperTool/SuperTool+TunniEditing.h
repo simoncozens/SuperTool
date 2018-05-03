@@ -16,5 +16,7 @@
 - (void)balance;
 - (void)drawTunniLinesForSegment:(NSArray*)seg;
 - (void)drawTunniBackground:(GSLayer*)Layer;
-
+- (void)tunniMouseDown:(NSEvent*)theEvent;
+- (void)tunniMouseDragged:(NSEvent*)theEvent;
+- (void)tunniMouseUp:(NSEvent*)theEvent;
 @end

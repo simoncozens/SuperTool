@@ -45,7 +45,7 @@ NSString* lineZoomDefault = @"org.simon-cozens.SuperTool.tunniZoomThreshold";
 }
 
 
-- (void) mouseDown:(NSEvent*)theEvent {
+- (void) tunniMouseDown:(NSEvent*)theEvent {
     // Called when the mouse button is clicked.
     if ([drawTunni state] != NSOnState) return [super mouseDown:theEvent];
     
@@ -88,7 +88,7 @@ NSString* lineZoomDefault = @"org.simon-cozens.SuperTool.tunniZoomThreshold";
     return [super mouseDown:theEvent];
 }
 
-- (void) mouseDragged:(NSEvent *)theEvent {
+- (void) tunniMouseDragged:(NSEvent *)theEvent {
     if (!tunniSeg) return [super mouseDragged:theEvent];
     GSLayer* currentLayer = [_editViewController.graphicView activeLayer];
     NSPoint Loc = [_editViewController.graphicView getActiveLocation: theEvent];
@@ -129,7 +129,7 @@ NSString* lineZoomDefault = @"org.simon-cozens.SuperTool.tunniZoomThreshold";
     }
 }
 
-- (void) mouseUp:(NSEvent *)theEvent {
+- (void) tunniMouseUp:(NSEvent *)theEvent {
     if (tunniSeg) {
         GSLayer* currentLayer = [_editViewController.graphicView activeLayer];
         [[currentLayer undoManager] endUndoGrouping];
@@ -179,7 +179,7 @@ NSString* lineZoomDefault = @"org.simon-cozens.SuperTool.tunniZoomThreshold";
 }
 
 
-- (void)drawTunniLinesForSegment:(NSArray*)seg {
+- (void)drawTunniLinesForSegment:(NSArray*)seg upem:(NSUInteger)upem {
     NSPoint p1 = [seg[0] pointValue];
     NSPoint p2 = [seg[1] pointValue];
     NSPoint p3 = [seg[2] pointValue];
@@ -190,17 +190,21 @@ NSString* lineZoomDefault = @"org.simon-cozens.SuperTool.tunniZoomThreshold";
     CGFloat currentZoom =  [_editViewController.graphicView scale];
     NSColor* col;
     float tunniZoomThreshold = [[[NSUserDefaults standardUserDefaults] objectForKey:lineZoomDefault]floatValue];
-
+    tunniZoomThreshold /= (float)upem;
+    tunniZoomThreshold *= 1000.0;
+    
     if (currentZoom < tunniZoomThreshold)
         col = [NSColor colorWithCalibratedRed: 0 green:0 blue:1 alpha:currentZoom-tunniZoomThreshold/2.0];
     else
         col = [NSColor blueColor];
     [col set];
     //    [self drawHandle:NSMakePoint(0,0) isSelected:FALSE atPoint:tunniPoint];
-    
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    [paragraphStyle setAlignment:NSTextAlignmentCenter];
     NSDictionary* attrs = @{
                             NSFontAttributeName: [NSFont labelFontOfSize: 10/currentZoom ],
-                            NSForegroundColorAttributeName:col
+                            NSForegroundColorAttributeName:col,
+                            NSParagraphStyleAttributeName:paragraphStyle
                             };
     if (sDistance > 0) {
         CGFloat xPercent = GSDistance(p1,p2) / sDistance;
@@ -208,14 +212,14 @@ NSString* lineZoomDefault = @"org.simon-cozens.SuperTool.tunniZoomThreshold";
         //        NSAffineTransform *rotate = [NSAffineTransform transform];
         //        [rotate rotateByDegrees:GSAngleOfVector(GSSubtractPoints(p2, p1)) / M_PI * 180.0];
         //        [rotate concat];
-        [_editViewController.graphicView drawText:label atPoint:GSMiddlePoint(p1, p2) alignment:4];
+        [label drawAtPoint:GSMiddlePoint(p1,p2)];
         //        [rotate invert];
         //        [rotate concat];
     }
     if (eDistance > 0) {
         CGFloat yPercent = GSDistance(p3,p4) / eDistance;
         NSAttributedString *label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%.1f%%", yPercent*100.0] attributes:attrs];
-        [_editViewController.graphicView drawText:label atPoint:GSMiddlePoint(p3, p4) alignment:4];
+        [label drawAtPoint:GSMiddlePoint(p3,p4)];
     }
     if (sDistance > 0 && eDistance > 0) {
         NSBezierPath* bez = [NSBezierPath bezierPath];
@@ -234,8 +238,9 @@ NSString* lineZoomDefault = @"org.simon-cozens.SuperTool.tunniZoomThreshold";
 - (void)drawTunniBackground:(GSLayer*)Layer {
     BOOL doDrawTunni = [drawTunni state] == NSOnState;
     if (!doDrawTunni) return;
+    NSUInteger upem = Layer.font.unitsPerEm;
     [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSArray* seg) {
-        [self drawTunniLinesForSegment:seg];
+        [self drawTunniLinesForSegment:seg upem:upem];
     }];
 
 }
