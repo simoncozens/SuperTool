@@ -13,34 +13,54 @@
 const float HANDLE_SIZE = 5.0;
 
 NSMenuItem* drawTunni;
+NSMenuItem* drawTunniTwo;
 NSString* drawTunniDefault = @"org.simon-cozens.SuperTool.drawingTunni";
 
 const float DEFAULT_ZOOM_THRESHOLD = 2.0;
 NSString* lineZoomDefault = @"org.simon-cozens.SuperTool.tunniZoomThreshold";
+bool initDone = false;
 
 - (void) initTunni {
-    drawTunni = [[NSMenuItem alloc] initWithTitle:@"Show Tunni lines" action:@selector(displayTunniState) keyEquivalent:@""];
+    drawTunni = [[NSMenuItem alloc] initWithTitle:@"Show Tunni lines" action:@selector(displayTunniState:) keyEquivalent:@"U"];
+    drawTunniTwo = [[NSMenuItem alloc] initWithTitle:@"Show Tunni lines" action:@selector(displayTunniState:) keyEquivalent:@""];
+    
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:drawTunniDefault]boolValue]) {
         [drawTunni setState:NSOnState];
+        [drawTunniTwo setState:NSOnState];
     }
     float tz = [[[NSUserDefaults standardUserDefaults] objectForKey:lineZoomDefault]floatValue];
     if (!tz) {
         [[NSUserDefaults standardUserDefaults] setFloat:DEFAULT_ZOOM_THRESHOLD forKey:lineZoomDefault];
     }
+    NSMenuItem* viewMenu = [[[NSApplication sharedApplication] mainMenu] itemAtIndex:6];
+    [drawTunni setKeyEquivalentModifierMask:NSEventModifierFlagCommand];
+ 
+    NSMenuItem* editMenu = [[[NSApplication sharedApplication] mainMenu] itemAtIndex:2];
+    NSMenuItem* balanceItem = [[NSMenuItem alloc] initWithTitle:@"Balance" action:@selector(balance) keyEquivalent:@"b"];
+    
+    [balanceItem setKeyEquivalentModifierMask:NSEventModifierFlagCommand|NSEventModifierFlagOption];
+    if (!initDone) {
+        [viewMenu.submenu addItem:drawTunni];
+        [editMenu.submenu addItem:balanceItem];
+        initDone = true;
+    }
 }
 
 - (void) addTunniToContextMenu:(NSMenu*)theMenu {
-    [theMenu insertItem:drawTunni atIndex:0];
+    [theMenu insertItem:drawTunniTwo atIndex:0];
 }
 
-- (void) displayTunniState {
-    if ([drawTunni state] == NSOnState) {
+- (void) displayTunniState:(id)sender {
+    if ([sender state] == NSOnState) {
         [drawTunni setState:NSOffState];
+        [drawTunniTwo setState:NSOffState];
         [[NSUserDefaults standardUserDefaults] setObject:@NO forKey:drawTunniDefault];
     } else {
         [drawTunni setState:NSOnState];
+        [drawTunniTwo setState:NSOnState];
         [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:drawTunniDefault];
     }
+
     [_editViewController.graphicView setNeedsDisplay: TRUE];
 }
 
@@ -140,6 +160,7 @@ NSString* lineZoomDefault = @"org.simon-cozens.SuperTool.tunniZoomThreshold";
 
 
 - (void) balance {
+    if (![self anyCurvesSelected]) { return; }
     GSLayer* currentLayer = [_editViewController.graphicView activeLayer];
     NSMutableOrderedSet* segments = [[NSMutableOrderedSet alloc] init];
     GSNode* n;

@@ -13,6 +13,7 @@
 - (void)commitSimplify;
 - (void)revertSimplify;
 - (void)doSimplify;
+- (void)initSimplify;
 
 - (NSUInteger)splice:(GSPath*)newPath into:(GSPath*)path at:(NSRange)splice;
 

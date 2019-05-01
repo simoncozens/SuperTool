@@ -10,8 +10,21 @@
 #import "SuperTool+TunniEditing.h"
 
 @implementation SuperTool (Harmonize)
+static bool inited = false;
+
+- (void) initHarmonize {
+    NSMenuItem* editMenu = [[[NSApplication sharedApplication] mainMenu] itemAtIndex:2];
+    NSMenuItem* harmonizeItem = [[NSMenuItem alloc] initWithTitle:@"Harmonize" action:@selector(harmonize) keyEquivalent:@"z"];
+
+    [harmonizeItem setKeyEquivalentModifierMask:NSEventModifierFlagCommand|NSEventModifierFlagOption];
+    if (!inited) {
+        [editMenu.submenu addItem:harmonizeItem];
+        inited = true;
+    }
+}
 
 - (void) addHarmonizeItemToMenu:(NSMenu*)theMenu {
+    
     [theMenu insertItemWithTitle:@"Harmonize" action:@selector(harmonize) keyEquivalent:@"" atIndex:0];
 }
 
@@ -19,9 +32,9 @@
     if (![a3 isKindOfClass:[GSNode class]]) return;
     if ([a3 connection] != SMOOTH) return;
     GSNode* a2 = [a3 prevNode]; if ([a2 type] != OFFCURVE) return;
-    GSNode* a1 = [a2 prevNode]; if ([a2 type] != OFFCURVE) return;
+    GSNode* a1 = [a2 prevNode]; if ([a1 type] != OFFCURVE) return;
     GSNode* b1 = [a3 nextNode]; if ([b1 type] != OFFCURVE) return;
-    GSNode* b2 = [b1 nextNode]; if ([b1 type] != OFFCURVE) return;
+    GSNode* b2 = [b1 nextNode]; if ([b2 type] != OFFCURVE) return;
     NSPoint d = GSIntersectLineLineUnlimited([a1 position],[a2 position],[b1 position],[b2 position]);
     CGFloat p0 = GSDistance([a1 position], [a2 position]) / GSDistance([a2 position], d);
     CGFloat p1 = GSDistance(d, [b1 position]) / GSDistance([b1 position], [b2 position]);

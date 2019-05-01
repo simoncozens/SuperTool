@@ -12,8 +12,19 @@
 
 @implementation SuperTool (Simplify)
 
+bool inited = false;
 bool willUndo = true;
 
+- (void) initSimplify {
+    NSMenuItem* editMenu = [[[NSApplication sharedApplication] mainMenu] itemAtIndex:2];
+    NSMenuItem* simplifyItem = [[NSMenuItem alloc] initWithTitle:@"Simplify.." action:@selector(showSimplifyWindow) keyEquivalent:@"s"];
+    
+    [simplifyItem setKeyEquivalentModifierMask:NSEventModifierFlagCommand|NSEventModifierFlagOption];
+    if (!inited) {
+        [editMenu.submenu addItem:simplifyItem];
+        inited = true;
+    }
+}
 // Ensure selection array contains [s,e]
 - (void) addToSelectionSegmentStarting:(GSNode*)s Ending:(GSNode*)e {
     NSMutableArray *a;
@@ -39,6 +50,8 @@ bool willUndo = true;
 - (void) showSimplifyWindow {
     // Capture current seg selection
     // A segment is selected if its start and end nodes are selected.
+    if (![self multipleSegmentsSelected]) { return; }
+
     GSLayer* currentLayer = [_editViewController.graphicView activeLayer];
     willUndo = true;
     NSMutableOrderedSet* sel = [currentLayer selection];

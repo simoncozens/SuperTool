@@ -6,6 +6,9 @@
 //    Copyright © 2016 Simon Cozens. All rights reserved.
 //
 
+// XXX - stuff added to menu multiple times
+// XXX - curvefitter needs rewriting
+
 #import "SuperTool.h"
 #import "SuperTool+TunniEditing.h"
 #import "SuperTool+Curvature.h"
@@ -67,6 +70,8 @@ bool demo_version = FALSE;
     
     if (!expired) {
         [self initTunni];
+        [self initHarmonize];
+        [self initSimplify];
         [self initCurvature];
         [self initCallipers];
         [self initCoverage];

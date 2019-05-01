@@ -12,6 +12,7 @@
 @implementation SuperTool (Curvature)
 
 NSMenuItem* drawCurves;
+NSMenuItem* drawCurvesTwo;
 NSString* drawCurvesDefault = @"org.simon-cozens.SuperTool.drawingCurvature";
 
 NSMenuItem* drawRainbows;
@@ -31,10 +32,20 @@ NSSlider* combScaleSlider;
 NSMenuItem* combScaleSliderMenuItem;
 const float CombScale = 100;
 NSString* combScaleDefault = @"org.simon-cozens.SuperTool.combScale";
+static bool inited = false;
 
 - (void)initCurvature {
-    drawCurves = [[NSMenuItem alloc] initWithTitle:@"Show curvature" action:@selector(displayCurvatureState:) keyEquivalent:@""];
+    if (inited) { return; }
+    drawCurves = [[NSMenuItem alloc] initWithTitle:@"Show curvature" action:@selector(displayCurvatureState:) keyEquivalent:@"V"];
+    [drawCurves setKeyEquivalentModifierMask:NSEventModifierFlagCommand];
     [drawCurves setRepresentedObject:drawCurvesDefault];
+
+    NSMenuItem* viewMenu = [[[NSApplication sharedApplication] mainMenu] itemAtIndex:6];
+    [viewMenu.submenu addItem:drawCurves];
+
+    drawCurvesTwo = [[NSMenuItem alloc] initWithTitle:@"Show curvature" action:@selector(displayCurvatureState:) keyEquivalent:@""];
+    [drawCurvesTwo setRepresentedObject:drawCurvesDefault];
+
     drawRainbows = [[NSMenuItem alloc] initWithTitle:@"Show pen angle rainbows" action:@selector(displayCurvatureState:) keyEquivalent:@""];
     [drawRainbows setRepresentedObject:drawRainbowsDefault];
     drawSpots = [[NSMenuItem alloc] initWithTitle:@"Show discontinuities" action:@selector(displayCurvatureState:) keyEquivalent:@""];
@@ -70,6 +81,7 @@ NSString* combScaleDefault = @"org.simon-cozens.SuperTool.combScale";
     
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:drawCurvesDefault]boolValue]) {
         [drawCurves setState:NSOnState];
+        [drawCurvesTwo setState: NSOnState];
     }
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:drawRainbowsDefault]boolValue]) {
         [drawRainbows setState:NSOnState];
@@ -82,7 +94,7 @@ NSString* combScaleDefault = @"org.simon-cozens.SuperTool.combScale";
     } else {
         [fade setState:NSOnState];
     }
-
+    inited = true;
 }
 
 - (void)addCurvatureToContextMenu:(NSMenu*)theMenu {
@@ -91,7 +103,7 @@ NSString* combScaleDefault = @"org.simon-cozens.SuperTool.combScale";
     [theMenu insertItem:fade atIndex:0];
     [theMenu insertItem:flip atIndex:0];
     [theMenu insertItem:combScaleSliderMenuItem atIndex:0];
-    [theMenu insertItem:drawCurves atIndex:0];
+    [theMenu insertItem:drawCurvesTwo atIndex:0];
 }
 
 -(void)setCombScale:(id)sender {
@@ -107,6 +119,8 @@ NSString* combScaleDefault = @"org.simon-cozens.SuperTool.combScale";
         [sender setState:NSOnState];
         [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:[sender representedObject]];
     }
+    if (sender == drawCurves) { [drawCurvesTwo setState:[sender state]]; }
+    if (sender == drawCurvesTwo) { [drawCurves setState:[sender state]]; }
     [_editViewController.graphicView setNeedsDisplay: TRUE];
 }
 
@@ -118,11 +132,11 @@ NSString* combScaleDefault = @"org.simon-cozens.SuperTool.combScale";
     if (doDrawCurves) {
         [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSArray* seg) {
             float thisC = [self maxCurvatureForSegment:seg];
-            NSLog(@"Max curve for segments: %f", thisC);
-            if (thisC > maxC) maxC = thisC;
+//            NSLog(@"Max curve for segments: %f", thisC);
+            if (thisC > maxC && thisC < 5000) maxC = thisC;
         }];
     }
-    NSLog(@"Max curve for glyph: %f", maxC);
+//    NSLog(@"Max curve for glyph: %f", maxC);
     [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSArray* seg) {
         if (doDrawCurves) { [self drawCurvatureForSegment:seg maxCurvature:maxC]; }
         if (doDrawRainbows) { [self drawRainbowsForSegment:seg]; }
@@ -144,7 +158,7 @@ NSString* combScaleDefault = @"org.simon-cozens.SuperTool.combScale";
             CGFloat curvBack = dBack / (cBack * cBack);
             CGFloat diff = fabs(curvBack - curvForward) * 1000 * 10;
             SCLog( @"At point %@: diff = %f", n, diff);
-            if (diff > 250) continue;
+            if (diff > 250 || diff < FLT_EPSILON) continue;
             NSColor* first = [NSColor colorWithCalibratedRed:1 green:0.1 blue:0.1 alpha:MAX(1-diff/250,0.5)];
             NSBezierPath * path = [NSBezierPath bezierPath];
             [path appendBezierPathWithArcWithCenter:[n position] radius:diff startAngle:0 endAngle:359];

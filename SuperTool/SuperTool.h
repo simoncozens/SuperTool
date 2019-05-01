@@ -68,6 +68,8 @@ typedef enum {
 
 }
 
+- (BOOL) multipleSegmentsSelected;
+- (BOOL) anyCurvesSelected;
 
 - (void)iterateOnCurvedSegmentsOfLayer:(GSLayer*)l withBlock:(void (^)(NSArray*seg))handler;
 

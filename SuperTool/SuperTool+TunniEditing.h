@@ -12,7 +12,7 @@
 
 - (void)initTunni;
 - (void) addTunniToContextMenu:(NSMenu*)theMenu;
-- (void) displayTunniState;
+- (void) displayTunniState:(id)sender;
 - (void)balance;
 - (void)drawTunniLinesForSegment:(NSArray*)seg;
 - (void)drawTunniBackground:(GSLayer*)Layer;
