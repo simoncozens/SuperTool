@@ -132,11 +132,12 @@ static bool inited = false;
     if (doDrawCurves) {
         [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSArray* seg) {
             float thisC = [self maxCurvatureForSegment:seg];
-//            NSLog(@"Max curve for segments: %f", thisC);
-            if (thisC > maxC && thisC < 5000) maxC = thisC;
+            NSLog(@"Max curve for segments: %f", thisC);
+            if (thisC > maxC) maxC = thisC;
         }];
     }
-//    NSLog(@"Max curve for glyph: %f", maxC);
+    maxC = MIN(maxC, 1);
+    NSLog(@"Max curve for glyph: %f", maxC);
     [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSArray* seg) {
         if (doDrawCurves) { [self drawCurvatureForSegment:seg maxCurvature:maxC]; }
         if (doDrawRainbows) { [self drawRainbowsForSegment:seg]; }
@@ -244,7 +245,6 @@ static bool inited = false;
             [path setLineWidth: 1];
             [path lineToPoint: end];
         }
-        t+= 0.02;
     }
     second = [second blendedColorWithFraction:thisMaxC*20 ofColor:emptyRed];
     [second set];
