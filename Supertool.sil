@@ -1,0 +1,109 @@
+\begin[papersize=a4]{document}
+\script[src=packages/color]
+\script[src=packages/image]
+\script[src=packages/linespacing]
+\begin{center}
+\begin[color=#775533]{color}
+\font[size=20pt, family=Gotham, weight=800]{SuperTool - User’s Guide}
+\end{color}
+\end{center}
+\bigskip
+
+\font[family=Gotham,weight=100]
+\set[parameter=document.parskip,value=1ex]
+\set[parameter=document.baselineskip,value=1.4em]
+
+Thank you for your interest in SuperTool. I hope it allows you to create type more easily, more expressively and more beautifully.
+
+\medskip
+\font[size=12pt, family=Gotham, weight=800,style=Italic]{Installing}
+\medskip
+
+Installing SuperTool is easy. Double click on the file that you received from me to unzip it, and double click on the Glyphs tool to install it. You may then need to restart Glyphs to make the tool functional.
+
+If everything is working, then you’ll see the SuperTool logo in the toolbar:\par
+\medskip
+\center{\img[height=20pt,src=images/installed.png]}
+\medskip
+If you don’t see that, check in the Plugins preferences pane by choosing “Preferences” from the “Glyphs” menu. If SuperTool isn’t in your list of plugins, then it didn’t get installed properly. If it is installed but it doesn’t appear in the toolbar, something has gone wrong. Please see “Something Went Wrong” at the bottom of the next page.
+
+\font[size=12pt, family=Gotham, weight=800,style=Italic]{Activating}
+\medskip
+
+You can activate SuperTool by clicking on the icon, or pressing the "U" key. SuperTool acts like the ordinary select tool, and all the usual features are available. The new features that SuperTool adds are driven by the context menu. If you right-click, you’ll see some additional menu items:\par
+
+\medskip
+\center{\img[width=80pt,src=images/plain-context.png]}
+\medskip
+\font[size=12pt, family=Gotham, weight=800,style=Italic]{Curvature visualization}
+\medskip
+To turn on the curvature visualization, right-click and choose “Show curvature” from the context menu. SuperTool will show you how steep your curves are. The curvature combs are colored according to the \font[weight=400]{maximum} curvature of each segment - in other words, two segments which meet at a point of equal curvature might be different shades. That’s OK; match heights, not colors.
+
+Also, you’ll notice that the coloring starts at dark pink for segments of low curvature, and fades out to white for segments of high curvature. This sounds counterintuitive, but it’s deliberate: if it were the other way around, then very tight curves would make a big mess all over your screen.
+
+\medskip
+\font[size=12pt, family=Gotham, weight=800,style=Italic]{Harmonize}
+\medskip
+
+To equalize the curvature around a smooth on-curve point, select it, right-click and choose “Harmonize”. SuperTool will shift the handles until the incoming curvature equals the outgoing curvature. You can select multiple points at once; if no points are selected, then everything gets harmonized. Harmonizing everything isn’t always a great idea: points will harmonized one at a time, in order. As one point gets harmonized, its curves will change, meaning that the previous point may not be harmonized any more. So it’s better to harmonize one point at a time, but if you do want to harmonize multiple points, you can often get a balanced whole by applying harmonization repeatedly.
+
+\pagebreak
+\medskip
+\font[size=12pt, family=Gotham, weight=800,style=Italic]{Simplify}
+\medskip
+
+The “Simplify” tool attempts to find a simpler curve through the selected points. For best results, don’t select the whole glyph; instead, limit your simplification to a series of points which look like they’re going to make a smooth curve. Don’t try to simplify too many twists and turns at once. You can always select another set of points and do it again.
+
+“Simplify” is only available from the context menu when one or more whole segments are selected - that is, the on-curve points at the start or end of a segment. If you can’t see it, check your selection.
+
+\medskip
+\font[size=12pt, family=Gotham, weight=800,style=Italic]{Tunni Lines and Balancing}
+\medskip
+
+Right-click and select “Show Tunni Lines”. If nothing happened, you’re probably zoomed out. If you zoom in a bit, you should see: 1) Some percentages in blue; 2) some little blue circles; 3) some blue dotted lines.
+
+\medskip
+\center{\img[height=200pt,src=images/tunni.png]}
+\medskip
+
+The percentages tell you how far the handle is from the Tunni point. Selecting at least one handle (not an on-curve point!) will add the “Balance” command to the context menu. When you click this, the two percentages will be averaged and the handles placed appropriately.
+
+The little blue circle is the Tunni point. This can be dragged around to reposition the curve without changing its tension. I don’t know if that’s a useful thing to do or not.
+
+What is useful is to drag the blue line. This moves both handles simultaneously to change the tension of the curve.
+
+\medskip
+\font[size=12pt, family=Gotham, weight=800,style=Italic]{Digital Callipers}
+\medskip
+
+SuperTool also allows you to visualize the thickness of your stems. First select a start stem by holding down the Option key and clicking and dragging the mouse pointer through a stem. The mouse pointer will draw a green line. You must cut through two (and only two) curves in order to choose a stem. If you have selected a stem correctly, the next time you hold down Option and click and drag, the mouse pointer will draw a red line. This is your end stem. Holding down Shift while dragging causes the line to be drawn orthogonally, either vertically or horizontally. (Basically, it's just like the Knife tool.)
+
+Once you have correctly selected a start and end stem, SuperTool will then visualize the thickness between two portions: yellows and reds for thicker areas, greens for areas of average thickness, and blues for thinner areas. This visualization updates as you change the curves around.
+
+\em{Note:} This visualization works particularly well with the wonderful “Show Stem Thickness” plugin, available from the Glyphs plugin manager.
+
+If you would like to visualize the whole glyph instead, rather than a portion of the stem, you could try my (free!) Heatmap plugin. Digital Callipers is quicker and more accurate.
+
+\em{Note:} There is a bug in which the visualization goes wrong if the start and end stems are on different sides of the path start (the green triangle node). To fix that would require horrible mathematics and lots of time, and it's easier just not to do that. Sorry.
+
+\font[size=12pt, family=Gotham, weight=800,style=Italic]{Something Went Wrong}
+\medskip
+If you can’t get SuperTool working, please send me an email. What would be very helpful would be if you could do the following things:
+
+\begin{raggedright}
+\noindent{}1) Open the “Console” utility from Finder > Applications > Utilities.\break
+2) Quit Glyphs.\break
+3) Go to Console and press ”Clear display”\break
+4) Start Glyphs.\break
+5) Go back to Console, select-all (command-A) and copy (command-C).\break
+6) Paste everything you got into an email to me, with more details about what you did and what went wrong.
+\end{raggedright}
+\medskip
+\font[size=12pt, family=Gotham, weight=800,style=Italic]{That’s It}
+\medskip
+
+Thanks again for your interest in SuperTool. If there’s anything else I can do for you, don’t hesitate to email me on simon@simon-cozens.org
+
+Have fun!
+
+\end{document}
