@@ -6,7 +6,6 @@
 //    Copyright © 2016 Simon Cozens. All rights reserved.
 //
 
-// XXX - stuff added to menu multiple times
 // XXX - curvefitter needs rewriting
 
 #import "SuperTool.h"
@@ -19,29 +18,6 @@
 
 @implementation SuperTool
 
-const int SAMPLE_SIZE = 200;
-bool expired = FALSE;
-NSInteger days = 30;
-bool demo_version = FALSE;
-
-+ (NSInteger)daysBetweenDate:(NSDate*)fromDateTime andDate:(NSDate*)toDateTime
-{
-    NSDate *fromDate;
-    NSDate *toDate;
-    
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    
-    [calendar rangeOfUnit:NSCalendarUnitDay startDate:&fromDate
-                 interval:NULL forDate:fromDateTime];
-    [calendar rangeOfUnit:NSCalendarUnitDay startDate:&toDate
-                 interval:NULL forDate:toDateTime];
-    
-    NSDateComponents *difference = [calendar components:NSCalendarUnitDay
-                                               fromDate:fromDate toDate:toDate options:0];
-    
-    return [difference day];
-}
-
 - (id)init {
 	self = [super init];
     NSArray *arrayOfStuff;
@@ -52,31 +28,13 @@ bool demo_version = FALSE;
 		[_toolBarIcon setTemplate:YES];
 	}
 
-    if (demo_version) {
-        NSString* demoDefault = @"org.simon-cozens.SuperTool.demoStarted";
-        NSDate *myDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:demoDefault];
-        if (!myDate) {
-            NSDate *startDate = [NSDate date];
-            [[NSUserDefaults standardUserDefaults] setObject:startDate forKey:demoDefault];
-            myDate = startDate;
-        }
-        NSDate *now = [NSDate date];
-        days = [SuperTool daysBetweenDate:myDate andDate:now];
-        NSLog(@"Days: %li", days);
-        if (days > 29) {
-            expired = TRUE;
-        }
-    }
-    
-    if (!expired) {
-        [self initTunni];
-        [self initHarmonize];
-        [self initSimplify];
-        [self initCurvature];
-        [self initCallipers];
-        [self initCoverage];
-    }
-    
+    [self initTunni];
+    [self initHarmonize];
+    [self initSimplify];
+    [self initCurvature];
+    [self initCallipers];
+    [self initCoverage];
+
     simplifySegSet = [[NSMutableArray alloc] init];
     simplifySpliceSet = [[NSMutableArray alloc] init];
     simplifyPathSet = [[NSMutableArray alloc] init];
@@ -130,40 +88,23 @@ bool demo_version = FALSE;
 - (NSMenu *)defaultContextMenu {
 	// Adds items to the context menu.
     NSMenu *theMenu = [super defaultContextMenu];
-    if (!expired) {
-        [self addTunniToContextMenu:theMenu];
-        [self addCurvatureToContextMenu:theMenu];
-        [self addCoverageToContextMenu:theMenu];
-        [theMenu insertItem:[NSMenuItem separatorItem] atIndex:3];
-        if (demo_version) {
-            NSMenuItem* disabled = [[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"Demo: %li days remaining.", 30-days] action:NULL keyEquivalent:@""];
-            [disabled setEnabled:NO];
-            [theMenu insertItem:disabled atIndex:0];
-        }
-    } else {
-       NSMenuItem* disabled = [[NSMenuItem alloc] initWithTitle:@"SuperTool demo has expired" action:NULL keyEquivalent:@""];
-        [disabled setEnabled:NO];
-        NSMenuItem* disabled2 = [[NSMenuItem alloc] initWithTitle:@"Contact simon@simon-cozens.org to continue using" action:NULL keyEquivalent:@""];
-        [disabled2 setEnabled:NO];
-        [theMenu insertItem:disabled atIndex:0];
-        [theMenu insertItem:disabled2 atIndex:1];
-        [theMenu insertItem:[NSMenuItem separatorItem] atIndex:2];
-    }
+    [self addTunniToContextMenu:theMenu];
+    [self addCurvatureToContextMenu:theMenu];
+    [self addCoverageToContextMenu:theMenu];
+    [theMenu insertItem:[NSMenuItem separatorItem] atIndex:3];
     return theMenu;
 }
 
 - (void)addMenuItemsForEvent:(NSEvent *)theEvent toMenu:(NSMenu *)theMenu {
     [super addMenuItemsForEvent:theEvent toMenu:theMenu];
 
-    if (!expired) {
-        [theMenu insertItem:[NSMenuItem separatorItem] atIndex:0];
-        [self addHarmonizeItemToMenu:theMenu];
-        if ([self multipleSegmentsSelected]) {
-            [theMenu insertItemWithTitle:@"Simplify..." action:@selector(showSimplifyWindow) keyEquivalent:@"" atIndex:0];
-        }
-        if ([self anyCurvesSelected]) {
-            [theMenu insertItemWithTitle:@"Balance" action:@selector(balance) keyEquivalent:@"" atIndex:0];
-        }
+    [theMenu insertItem:[NSMenuItem separatorItem] atIndex:0];
+    [self addHarmonizeItemToMenu:theMenu];
+    if ([self multipleSegmentsSelected]) {
+        [theMenu insertItemWithTitle:@"Simplify..." action:@selector(showSimplifyWindow) keyEquivalent:@"" atIndex:0];
+    }
+    if ([self anyCurvesSelected]) {
+        [theMenu insertItemWithTitle:@"Balance" action:@selector(balance) keyEquivalent:@"" atIndex:0];
     }
 }
 
@@ -220,39 +161,31 @@ bool demo_version = FALSE;
 }
 
 - (void)drawBackgroundForLayer:(GSLayer*)Layer {
-    if (!expired) {
-        [self drawTunniBackground:Layer];
-        [self drawCurvatureBackground:Layer];
-        [self drawCallipers:Layer];
-        [self showCoverage:Layer];
-    }
+    [self drawTunniBackground:Layer];
+    [self drawCurvatureBackground:Layer];
+    [self drawCallipers:Layer];
+    [self showCoverage:Layer];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
-    if (!expired) {
-        if ([theEvent modifierFlags] & NSEventModifierFlagOption) {
-            return [self callipersMouseDown:theEvent];
-        }
-        [self tunniMouseDown:theEvent];
+    if ([theEvent modifierFlags] & NSEventModifierFlagOption) {
+        return [self callipersMouseDown:theEvent];
     }
+    [self tunniMouseDown:theEvent];
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent {
-    if (!expired) {
-        if ([theEvent modifierFlags] & NSEventModifierFlagOption) {
-            return [self callipersMouseDragged:theEvent];
-        }
-        [self tunniMouseDragged:theEvent];
+    if ([theEvent modifierFlags] & NSEventModifierFlagOption) {
+        return [self callipersMouseDragged:theEvent];
     }
+    [self tunniMouseDragged:theEvent];
 }
 
 - (void)mouseUp:(NSEvent *)theEvent {
-    if (!expired) {
-        if ([theEvent modifierFlags] & NSEventModifierFlagOption) {
-            return [self callipersMouseUp:theEvent];
-        }
-        [self tunniMouseUp:theEvent];
+    if ([theEvent modifierFlags] & NSEventModifierFlagOption) {
+        return [self callipersMouseUp:theEvent];
     }
+    [self tunniMouseUp:theEvent];
 }
 
 @end
