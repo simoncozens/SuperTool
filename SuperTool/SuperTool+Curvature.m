@@ -106,11 +106,12 @@ static bool inited = false;
     [theMenu insertItem:drawCurvesTwo atIndex:0];
 }
 
+// Called when the volume slider is slid.
 -(void)setCombScale:(id)sender {
     [[NSUserDefaults standardUserDefaults] setFloat:[combScaleSlider floatValue] forKey:combScaleDefault];
     [_editViewController.graphicView setNeedsDisplay: TRUE];
-
 }
+
 - (void) displayCurvatureState:(id)sender {
     if ([sender state] == NSOnState) {
         [sender setState:NSOffState];
@@ -145,30 +146,39 @@ static bool inited = false;
     if (doDrawSpots) { [self drawSpotsForLayer:Layer]; }
 }
 
+// This draws a circle where there is a discontinuity
 - (void) drawSpotsForLayer:(GSLayer*)Layer {
     for (GSPath* p in Layer.paths) {
         for (GSNode* n in p.nodes) {
+            // We only want smooth nodes with handles on each side
             if (n.type != CURVE || n.connection != SMOOTH) continue;
             if ([n nextNode].type != OFFCURVE || [n prevNode].type != OFFCURVE) continue;
+
+            // Compute the curvature coming out of the node
             CGFloat cForward = GSDistance(n.position, [n nextNode].position);
             CGFloat dForward = GSDistanceOfPointFromLine([[n nextNode] nextNode].position, n.position, [n nextNode].position);
             CGFloat curvForward = dForward/(cForward * cForward);
 
+            // Compute the curvature going into of the node
             CGFloat cBack = GSDistance(n.position, [n prevNode].position);
             CGFloat dBack = GSDistanceOfPointFromLine([[n prevNode] prevNode].position, n.position, [n prevNode].position);
             CGFloat curvBack = dBack / (cBack * cBack);
+
+            // And show the difference
             CGFloat diff = fabs(curvBack - curvForward) * 1000 * 10;
             SCLog( @"At point %@: diff = %f", n, diff);
             if (diff > 250 || diff < FLT_EPSILON) continue;
-            NSColor* first = [NSColor colorWithCalibratedRed:1 green:0.1 blue:0.1 alpha:MAX(1-diff/250,0.5)];
+
+            NSColor* pinkish = [NSColor colorWithCalibratedRed:1 green:0.1 blue:0.1 alpha:MAX(1-diff/250,0.5)];
             NSBezierPath * path = [NSBezierPath bezierPath];
             [path appendBezierPathWithArcWithCenter:[n position] radius:diff startAngle:0 endAngle:359];
-            [first setFill];
+            [pinkish setFill];
             [path fill];
         }
     }
 }
 
+// This draws normals scaled by their curvature
 - (void)drawRainbowsForSegment:(NSArray*)seg {
     NSPoint p1 = [seg[0] pointValue];
     NSPoint p2 = [seg[1] pointValue];
@@ -216,21 +226,26 @@ static bool inited = false;
     return maxC;
 }
 
+// This is the main curvature comb drawing code. You need to have done
+// an initial pass to find the max curvature for scaling.
+
 - (void)drawCurvatureForSegment:(NSArray*)seg maxCurvature:(float)maxC{
     NSPoint p1 = [seg[0] pointValue];
     NSPoint p2 = [seg[1] pointValue];
     NSPoint p3 = [seg[2] pointValue];
     NSPoint p4 = [seg[3] pointValue];
+
+    // Grab user options
     BOOL alwaysShow = [fade state] == NSOffState;
+    float combScale = [[[NSUserDefaults standardUserDefaults] objectForKey:combScaleDefault]floatValue];
+    bool flipComb = [[[NSUserDefaults standardUserDefaults] objectForKey:flipDefault]boolValue];
 
     float t=0.0;
     NSBezierPath * path = [NSBezierPath bezierPath];
     [path moveToPoint: GSPointAtTime(p1,p2,p3,p4, 0)];
-    NSColor* first = [NSColor colorWithCalibratedRed:0.1 green:0.1 blue:0.1 alpha:0.3];
+
+    NSColor* grey = [NSColor colorWithCalibratedRed:0.1 green:0.1 blue:0.1 alpha:0.3];
     NSColor* emptyRed = [NSColor colorWithCalibratedRed:1.0 green:0 blue:0 alpha:alwaysShow?0.1:0];
-    NSColor* second = [first copy];
-    float combScale = [[[NSUserDefaults standardUserDefaults] objectForKey:combScaleDefault]floatValue];
-    bool flipComb = [[[NSUserDefaults standardUserDefaults] objectForKey:flipDefault]boolValue];
 
     combScale /= 5;
     combScale = combScale * combScale * (flipComb ? -1 : 1);
@@ -241,13 +256,15 @@ static bool inited = false;
         CGFloat c = sqrt(curvatureSquaredForT(p1,p2,p3,p4,t));
         if (c > thisMaxC) thisMaxC = c;
         if (c <= 10.0) {
+            // Push this point on the curve out along its normal by an amount related to the curvature
             NSPoint end = GSAddPoints(GSPointAtTime(p1,p2,p3,p4, t), GSScalePoint(normal, combScale*c));
             [path setLineWidth: 1];
             [path lineToPoint: end];
         }
     }
-    second = [second blendedColorWithFraction:thisMaxC*20 ofColor:emptyRed];
-    [second set];
+
+    // Fade from grey to light pink depending on tightness of segment
+    [[grey blendedColorWithFraction:thisMaxC*20 ofColor:emptyRed] set];
     [path lineToPoint: GSPointAtTime(p1,p2,p3,p4, 1)];
     [path curveToPoint:p1 controlPoint1:p3 controlPoint2:p2];
     [path fill];

@@ -108,6 +108,7 @@
     }
 }
 
+/* Have we clicked on more than one segment? (If we have, we can Simplify) */
 - (BOOL) multipleSegmentsSelected {
     GSLayer* currentLayer = [_editViewController.graphicView activeLayer];
     GSNode* n;
@@ -121,6 +122,7 @@
     return FALSE;
 }
 
+/* Have we clicked on either a handle or a node with two handles? */
 - (BOOL) anyCurvesSelected {
     GSLayer* currentLayer = [_editViewController.graphicView activeLayer];
     GSNode* n;

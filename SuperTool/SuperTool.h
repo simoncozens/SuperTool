@@ -26,7 +26,7 @@
 #define SCLog( ... )
 #endif
 
-
+/* Modes for Callipers */
 typedef enum {
     DRAWING_START,
     DRAWING_END
@@ -39,21 +39,26 @@ typedef enum {
 
 
 @interface SuperTool : GSToolSelect <NSWindowDelegate> {
-    NSMutableArray* simplifySegSet;
-    NSMutableArray* simplifySpliceSet;
-    NSMutableArray* simplifyPathSet;
-    NSMutableDictionary *copiedPaths;
-    NSMutableDictionary *originalPaths;
+    // Tunni lines data storage
     NSArray* tunniSeg;
     bool tunniDraggingLine;
     GSNode* tunniSegP2;
     GSNode* tunniSegP3;
+
+    // Simplify interface
     IBOutlet NSWindow *simplifyWindow;
     __weak IBOutlet NSButton *simplifyOK;
     __weak IBOutlet NSButton *simplifyCancel;
     __weak IBOutlet NSSlider *simplifySlider;
     __weak IBOutlet NSSlider *cornerSlider;
-    
+
+    // Simplify data storage
+    NSMutableArray* simplifySegSet;
+    NSMutableArray* simplifySpliceSet;
+    NSMutableArray* simplifyPathSet;
+    NSMutableDictionary *copiedPaths;
+    NSMutableDictionary *originalPaths;
+
     // Callipers
     GSLayer* callipersLayer;
     SCPathTime* segStart1;
@@ -65,7 +70,6 @@ typedef enum {
     long cacheAvg;
     TOOL_STATE tool_state;
     MEASURE_MODE measure_mode;
-
 }
 
 - (BOOL) multipleSegmentsSelected;

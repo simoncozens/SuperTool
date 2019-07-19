@@ -42,8 +42,6 @@ NSMutableArray* rainbow;
     segEnd1 = [segEnd1 init];
     segEnd2 = [segEnd2 init];
     [self recompute];
-    //    NSLog(@"Mousedown ended");
-    //    NSLog(@"__mouse dragged from : %@", NSStringFromPoint(_draggStart));
 }
 
 - (void) recompute {
@@ -138,10 +136,10 @@ NSMutableArray* rainbow;
     
 }
 
+// Find the point on a curve nearest to a given point.
 - (NSPoint) minSquareDistancePoint:(NSPoint) p Curve:(SCPathTime*)c {
     NSPoint best = [c point];
     if (measure_mode == MEASURE_CORRESPONDING) return best;
-    
     long bestDist = GSSquareDistance(p, best);
     SCPathTime* c2 = [c copy];
     while (true){
@@ -204,13 +202,15 @@ NSMutableArray* rainbow;
         segStart2 = segStart1; segStart1 = ss;
         segEnd2 = segEnd1; segEnd1 = se;
     }
-    
+
     int steps = STEPS_VALUE;
     CGFloat step1 = ((segEnd1->segId + segEnd1->t) - (segStart1->segId + segStart1->t)) / steps; // XXX
     CGFloat step2 = ((segEnd2->segId + segEnd2->t) - (segStart2->segId + segStart2->t)) / steps;
     long maxLen, minLen, avgLen;
     SCPathTime* t1, *t2;
-    
+
+    // First pass over the two segments determines maximum, minimum and
+    // average distances between them, for scaling the color map.
     minLen = 99999;
     maxLen = 0;
     avgLen = 0;
@@ -230,7 +230,11 @@ NSMutableArray* rainbow;
     }
     avgLen /= actualSteps;
     cacheMin = minLen;
-    
+
+    // Now we collect the lines which join the segments and determine
+    // their coloring.
+    // We could make this a lot faster by storing the p1 and p2 pairs
+    // above in an array and then iterating over it.
     t1 = [segStart1 copy];
     t2 = [segStart2 copy];
     while ([t1 compareWith: segEnd1] != copysign(1.0, step1)) {
@@ -242,7 +246,7 @@ NSMutableArray* rainbow;
         CGFloat hue = (120+((avgLen-dist)/scale*180.0))/360;
         //        if (hue < 0.2) hue -= 0.11;
         NSColor *c = [NSColor colorWithHue:hue saturation:1.0 brightness:1.0 alpha:1];
-        NSLog(@"Dist: %li, hue: %g. Min: %li, avg: %li, max: %li", dist, hue, minLen, avgLen, maxLen);
+        // NSLog(@"Dist: %li, hue: %g. Min: %li, avg: %li, max: %li", dist, hue, minLen, avgLen, maxLen);
         NSDictionary *line = @{
                                @"start": [NSValue valueWithPoint:p1],
                                @"end": [NSValue valueWithPoint:p2],
