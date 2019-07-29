@@ -202,6 +202,8 @@
 				TargetAttributes = {
 					F4B03C8D1CC88E7100564F32 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = GHYRZM4TBD;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -210,6 +212,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = F4B03C851CC88E7100564F32;
@@ -358,9 +361,12 @@
 		F4B03CA41CC88E7100564F32 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "/Users/simon/Library/Application Support/Glyphs/Plugins/";
 				DEPLOYMENT_LOCATION = YES;
+				DEVELOPMENT_TEAM = GHYRZM4TBD;
 				DSTROOT = "~/Library/Application Support/Glyphs/Plugins";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SYSTEM_APPS_DIR)/Glyphs.app/Contents/Frameworks",
@@ -371,6 +377,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks/";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.simon-cozens.SuperTool";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = glyphsTool;
 			};
@@ -379,7 +386,10 @@
 		F4B03CA51CC88E7100564F32 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = GHYRZM4TBD;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SYSTEM_APPS_DIR)/Glyphs.app/Contents/Frameworks",
 					"$(PROJECT_DIR)/SuperTool/",
@@ -389,6 +399,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks/";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.simon-cozens.SuperTool";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
 				WRAPPER_EXTENSION = glyphsTool;
 			};
