@@ -28,12 +28,6 @@
 
 //#define DEBUG_MODE
 
-#ifdef DEBUG_MODE
-#define SCLog NSLog
-#else
-#define SCLog( ... )
-#endif
-
 /* Modes for Callipers */
 typedef enum {
     DRAWING_START,

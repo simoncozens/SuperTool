@@ -371,6 +371,7 @@
 					"$(SYSTEM_APPS_DIR)/Glyphs.app/Contents/Frameworks",
 					"$(PROJECT_DIR)/SuperTool/",
 				);
+				GCC_PREFIX_HEADER = "SuperTool/SuperTool-Prefix.pch";
 				INFOPLIST_FILE = SuperTool/Info.plist;
 				INSTALL_PATH = /;
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks/";
@@ -393,6 +394,7 @@
 					"$(SYSTEM_APPS_DIR)/Glyphs.app/Contents/Frameworks",
 					"$(PROJECT_DIR)/SuperTool/",
 				);
+				GCC_PREFIX_HEADER = "SuperTool/SuperTool-Prefix.pch";
 				INFOPLIST_FILE = SuperTool/Info.plist;
 				INSTALL_PATH = /;
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks/";
