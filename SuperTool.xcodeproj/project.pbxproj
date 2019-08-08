@@ -209,10 +209,9 @@
 			};
 			buildConfigurationList = F4B03C891CC88E7100564F32 /* Build configuration list for PBXProject "SuperTool" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 			);
 			mainGroup = F4B03C851CC88E7100564F32;
