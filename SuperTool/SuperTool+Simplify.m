@@ -104,7 +104,7 @@ bool willUndo = true;
         if ([[nn parent] indexOfNode:nn] < [[n parent] indexOfNode:n]) {
             continue;
         }
-                SCLog(@"Considering %@ (parent: %@, index %i), next-on-curve: %@", n, [n parent],[[n parent] indexOfNode:n], nn);
+                SCLog(@"Considering %@ (parent: %@, index %ld), next-on-curve: %@", n, [n parent], [[n parent] indexOfNode:n], nn);
         if ([mySelection containsObject:nn]) {
             [self addToSelectionSegmentStarting:n Ending:nn];
                         SCLog(@"Added %@ -> %@ (next), Selection set is %@", n, nn, simplifySegSet);
