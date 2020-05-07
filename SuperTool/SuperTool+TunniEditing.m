@@ -80,7 +80,8 @@ bool initDone = false;
     /* Would love to use the block here but variable scoping rules don't allow it */
     GSPath *p;
     float tunniZoomThreshold = [[[NSUserDefaults standardUserDefaults] objectForKey:lineZoomDefault]floatValue];
-    for (p in currentLayer.paths) {
+    for (p in currentLayer.shapes) {
+        if (![p isKindOfClass:[GSPath class]]) continue;
         NSArray* seg;
         for (seg in p.segments) {
             if ([seg count] == 4) {

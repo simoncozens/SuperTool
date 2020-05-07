@@ -81,7 +81,8 @@ NSMutableArray* rainbow;
     _dragging = false;
     NSMutableArray* intersections = [NSMutableArray array];
     /* How many segments does my line intersect? */
-    for (GSPath* p in [layer paths]) {
+    for (GSPath* p in [layer shapes]) {
+        if (![p isKindOfClass:[GSPath class]]) continue;
         int i =0;
         NSArray* segs = [p segments];
         while (i < [segs count]) {

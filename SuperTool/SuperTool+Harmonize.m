@@ -66,7 +66,8 @@ static bool inited = false;
         }
     } else {
         GSPath* p;
-        for (p in [currentLayer paths]) {
+        for (p in currentLayer.shapes) {
+            if (![p isKindOfClass:[GSPath class]]) continue;
             for (n in [p nodes]) {
                 [self harmonize:n];
             }

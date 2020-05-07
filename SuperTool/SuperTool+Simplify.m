@@ -75,14 +75,14 @@ bool willUndo = true;
         GSPath* origPath = [n parentPath];
         GSLayer* layer = [[origPath parent] layer];
         SCLog(@"Looking for %@ in %@", origPath, copiedPaths);
-        NSNumber* pindex = [NSNumber numberWithLong:[layer indexOfPath:origPath]];
+        NSNumber* pindex = [NSNumber numberWithLong:[layer indexOfObjectInShapes:origPath]];
         rerootedPath = [copiedPaths objectForKey:pindex];
         if (!rerootedPath) {
             rerootedPath = [[n parent] copy];
             [copiedPaths setObject:rerootedPath forKey:pindex];
             SCLog(@"Cloned %@ to %@", [n parent], rerootedPath);
         }
-        GSNode* rerootedNode = [rerootedPath nodeAtIndex:[[n parent] indexOfNode:n]];
+        GSNode* rerootedNode = [rerootedPath nodeAtIndex:[[n parentPath] indexOfNode:n]];
         [mySelection addObject:rerootedNode];
         NSValue* rerootedNodeKey = [NSValue valueWithNonretainedObject:rerootedNode];
         [originalPaths setObject:[n parent] forKey:rerootedNodeKey];
@@ -94,14 +94,14 @@ bool willUndo = true;
         GSPath *p = [a parentPath];
         if (p != [b parent]) {
             GSLayer *l = [[p parent] layer];
-            return [l indexOfPath:p] < [l indexOfPath:[b parent]] ? NSOrderedAscending : NSOrderedDescending;
+            return [l indexOfObjectInShapes:p] < [l indexOfObjectInShapes:[b parentPath]] ? NSOrderedAscending : NSOrderedDescending;
         }
         return ([p indexOfNode:a] < [p indexOfNode:b]) ? NSOrderedAscending : NSOrderedDescending;
     }];
     SCLog(@"Selection is now %@", mySelection);
     for (n in mySelection) {
         nn = [n nextOnCurve];
-        if ([[[nn parentPath] layer] indexOfNode:nn] < [[n parentPath] indexOfNode:n]) {
+        if ([[nn parentPath] indexOfNode:nn] < [[n parentPath] indexOfNode:n]) {
             continue;
         }
                 SCLog(@"Considering %@ (parent: %@, index %ld), next-on-curve: %@", n, [n parentPath], [[n parentPath] indexOfNode:n], nn);

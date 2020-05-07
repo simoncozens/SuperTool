@@ -154,7 +154,8 @@ static bool inited = false;
 
 // This draws a circle where there is a discontinuity
 - (void) drawSpotsForLayer:(GSLayer*)Layer {
-    for (GSPath* p in Layer.paths) {
+    for (GSPath* p in Layer.shapes) {
+        if (![p isKindOfClass:[GSPath class]]) continue;
         for (GSNode* n in p.nodes) {
             // We only want smooth nodes with handles on each side
             if (n.type != CURVE || n.connection != SMOOTH) continue;
