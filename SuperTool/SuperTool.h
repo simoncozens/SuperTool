@@ -15,9 +15,6 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <GlyphsCore/GlyphsToolDrawProtocol.h>
-#import <GlyphsCore/GlyphsToolEventProtocol.h>
-#import <GlyphsCore/GlyphsPathPlugin.h>
 #import <GlyphsCore/GSToolSelect.h>
 #import <GlyphsCore/GSLayer.h>
 #import <GlyphsCore/GSPath.h>
