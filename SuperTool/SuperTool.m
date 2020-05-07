@@ -141,13 +141,15 @@
     return FALSE;
 }
 
-- (void)iterateOnCurvedSegmentsOfLayer:(GSLayer*)l withBlock:(void (^)(NSArray*seg))handler {
+- (void)iterateOnCurvedSegmentsOfLayer:(GSLayer*)l withBlock:(void (^)(GSPathSegment*seg))handler {
     GSPath *p;
     for (p in l.shapes) {
         if (![p isKindOfClass:[GSPath class]]) continue;
-        NSArray* seg;
-        for (seg in p.segments) {
-            if ([seg count] == 4) {
+        NSArray<GSPathSegment *> *segs = p.segments;
+        GSPathSegment* seg;
+        for (seg in segs) {
+            NSLog(@"Looking at segment %@", seg);
+            if (seg.countOfPoints == 4) {
                 handler(seg);
             }
         }

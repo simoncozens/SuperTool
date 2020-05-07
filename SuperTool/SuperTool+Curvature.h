@@ -20,7 +20,7 @@
 
 - (void)initCurvature;
 - (void)addCurvatureToContextMenu:(NSMenu*)theMenu;
-- (void)drawCurvatureForSegment:(NSArray*)seg maxCurvature:(float)maxC;
+- (void)drawCurvatureForSegment:(GSPathSegment*)seg maxCurvature:(float)maxC;
 - (void) displayCurvatureState:(id)sender;
 - (void) drawCurvatureBackground:(GSLayer*)Layer;
 - (void) setCombScale:(id)sender;

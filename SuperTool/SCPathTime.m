@@ -31,18 +31,18 @@
 - (NSPoint) point {
     GSPathSegment* seg = path.segments[segId];
     if (seg.countOfPoints == 2) {
-        NSPoint p1 = [seg.objects[0] pointValue];
-        NSPoint p2 = [seg.objects[1] pointValue];
+        NSPoint p1 = [seg pointAtIndex: 0];
+        NSPoint p2 = [seg pointAtIndex: 1];
         CGFloat x = p1.x + (p2.x-p1.x)*fmod(t,1.0);
         CGFloat y = p1.y + (p2.y-p1.y)*fmod(t,1.0);
         // NSLog(@"p1=[%g,%g] at t(%g)= [%g,%g] p2=[%g,%g]",p1.x,p1.y,fmod(t,1.0),x,y,p2.x,p2.y);
         return NSMakePoint(x, y);
     }
     NSPoint p = GSPointAtTime(
-                              [seg.objects[0] pointValue],
-                              [seg.objects[1] pointValue],
-                              [seg.objects[2] pointValue],
-                              [seg.objects[3] pointValue],
+                              [seg pointAtIndex: 0],
+                              [seg pointAtIndex: 1],
+                              [seg pointAtIndex: 2],
+                              [seg pointAtIndex: 3],
                               t);
     return p;
 }
@@ -79,8 +79,8 @@
 + (CGFloat) segLength: (GSPath*)p segId:(NSInteger)segId from:(CGFloat)t1 to:(CGFloat)t2 {
     GSPathSegment* seg = p.segments[segId];
     if (seg.countOfPoints == 2) {
-        NSPoint start = [seg.objects[0] pointValue];
-        NSPoint end = [seg.objects[1] pointValue];
+        NSPoint start = [seg pointAtIndex: 0];
+        NSPoint end = [seg pointAtIndex: 1];
         CGFloat x1 = start.x + (end.x-start.x)*fmod(t1,1.0);
         CGFloat y1 = start.y + (end.y-start.y)*fmod(t1,1.0);
         CGFloat x2 = start.x + (end.x-start.x)*fmod(t2,1.0);
@@ -88,10 +88,10 @@
         return sqrtf( (float)(((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2))));
     } else {
         NSPoint o1, o2, o3, o4;
-        NSPoint i1 = [seg.objects[0] pointValue];
-        NSPoint i2 = [seg.objects[1] pointValue];
-        NSPoint i3 = [seg.objects[2] pointValue];
-        NSPoint i4 = [seg.objects[3] pointValue];
+        NSPoint i1 = [seg pointAtIndex: 0];
+        NSPoint i2 = [seg pointAtIndex: 1];
+        NSPoint i3 = [seg pointAtIndex: 2];
+        NSPoint i4 = [seg pointAtIndex: 3];
         GSSegmentBetweenPoints(i1,i2,i3,i4, &o1, &o2, &o3, &o4, GSPointAtTime(i1,i2,i3,i4,t1),GSPointAtTime(i1,i2,i3,i4,t2));
         return GSLengthOfSegment(o1,o2,o3,o4);
     }

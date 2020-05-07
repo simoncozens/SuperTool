@@ -82,13 +82,13 @@ bool initDone = false;
     float tunniZoomThreshold = [[[NSUserDefaults standardUserDefaults] objectForKey:lineZoomDefault]floatValue];
     for (p in currentLayer.shapes) {
         if (![p isKindOfClass:[GSPath class]]) continue;
-        NSArray* seg;
+        GSPathSegment* seg;
         for (seg in p.segments) {
-            if ([seg count] == 4) {
-                NSPoint p1 = [seg[0] pointValue];
-                NSPoint p2 = [seg[1] pointValue];
-                NSPoint p3 = [seg[2] pointValue];
-                NSPoint p4 = [seg[3] pointValue];
+            if (seg.countOfPoints == 4) {
+                NSPoint p1 = [seg pointAtIndex:0];
+                NSPoint p2 = [seg pointAtIndex:1];
+                NSPoint p3 = [seg pointAtIndex:2];
+                NSPoint p4 = [seg pointAtIndex:3];
                 NSPoint t = GSIntersectLineLineUnlimited(p1,p2,p3,p4);
                 if (GSDistance(t, start) <= HANDLE_SIZE/2) {
                     // We have a winner!
@@ -119,10 +119,10 @@ bool initDone = false;
     if (!tunniSeg) return [super mouseDragged:theEvent];
     GSLayer* currentLayer = [_editViewController.graphicView activeLayer];
     NSPoint Loc = [_editViewController.graphicView getActiveLocation: theEvent];
-    NSPoint p1 = [tunniSeg[0] pointValue];
-    NSPoint p2 = [tunniSeg[1] pointValue];
-    NSPoint p3 = [tunniSeg[2] pointValue];
-    NSPoint p4 = [tunniSeg[3] pointValue];
+    NSPoint p1 = [tunniSeg pointAtIndex:0];
+    NSPoint p2 = [tunniSeg pointAtIndex:1];
+    NSPoint p3 = [tunniSeg pointAtIndex:2];
+    NSPoint p4 = [tunniSeg pointAtIndex:3];
     NSPoint tunniPoint = GSIntersectLineLineUnlimited(p1,p2,p3,p4);
     CGFloat sDistance = GSDistance(p1,tunniPoint);
     CGFloat eDistance = GSDistance(p4, tunniPoint);
@@ -207,11 +207,11 @@ bool initDone = false;
 }
 
 
-- (void)drawTunniLinesForSegment:(NSArray*)seg upem:(NSUInteger)upem {
-    NSPoint p1 = [seg[0] pointValue];
-    NSPoint p2 = [seg[1] pointValue];
-    NSPoint p3 = [seg[2] pointValue];
-    NSPoint p4 = [seg[3] pointValue];
+- (void)drawTunniLinesForSegment:(GSPathSegment*)seg upem:(NSUInteger)upem {
+    NSPoint p1 = [seg pointAtIndex:0];
+    NSPoint p2 = [seg pointAtIndex:1];
+    NSPoint p3 = [seg pointAtIndex:2];
+    NSPoint p4 = [seg pointAtIndex:3];
     NSPoint tunniPoint = GSIntersectLineLineUnlimited(p1,p2,p3,p4);
     CGFloat sDistance = GSDistance(p1,tunniPoint);
     CGFloat eDistance = GSDistance(p4, tunniPoint);
@@ -267,7 +267,7 @@ bool initDone = false;
     BOOL doDrawTunni = [drawTunni state] == NSOnState;
     if (!doDrawTunni) return;
     NSUInteger upem = Layer.font.unitsPerEm;
-    [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSArray* seg) {
+    [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(GSPathSegment* seg) {
         [self drawTunniLinesForSegment:seg upem:upem];
     }];
 

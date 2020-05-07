@@ -137,7 +137,7 @@ static bool inited = false;
     BOOL doDrawSpots = [drawSpots state] == NSOnState;
     __block float maxC = 0.0;
     if (doDrawCurves) {
-        [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSArray* seg) {
+        [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(GSPathSegment* seg) {
             float thisC = [self maxCurvatureForSegment:seg];
             NSLog(@"Max curve for segments: %f", thisC);
             if (thisC > maxC) maxC = thisC;
@@ -145,7 +145,7 @@ static bool inited = false;
     }
     maxC = MIN(maxC, 1);
     NSLog(@"Max curve for glyph: %f", maxC);
-    [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSArray* seg) {
+    [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(GSPathSegment* seg) {
         if (doDrawCurves) { [self drawCurvatureForSegment:seg maxCurvature:maxC]; }
         if (doDrawRainbows) { [self drawRainbowsForSegment:seg]; }
     }];
@@ -186,11 +186,11 @@ static bool inited = false;
 }
 
 // This draws normals scaled by their curvature
-- (void)drawRainbowsForSegment:(NSArray*)seg {
-    NSPoint p1 = [seg[0] pointValue];
-    NSPoint p2 = [seg[1] pointValue];
-    NSPoint p3 = [seg[2] pointValue];
-    NSPoint p4 = [seg[3] pointValue];
+- (void)drawRainbowsForSegment:(GSPathSegment*)seg {
+    NSPoint p1 = [seg pointAtIndex: 0];
+    NSPoint p2 = [seg pointAtIndex: 1];
+    NSPoint p3 = [seg pointAtIndex: 2];
+    NSPoint p4 = [seg pointAtIndex: 3];
     float t=0.0;
     CGFloat slen = GSLengthOfSegment(p1,p2,p3,p4);
     while (t<=1.0) {
@@ -218,11 +218,11 @@ static bool inited = false;
     }
 }
 
-- (float)maxCurvatureForSegment:(NSArray*)seg {
-    NSPoint p1 = [seg[0] pointValue];
-    NSPoint p2 = [seg[1] pointValue];
-    NSPoint p3 = [seg[2] pointValue];
-    NSPoint p4 = [seg[3] pointValue];
+- (float)maxCurvatureForSegment:(GSPathSegment*)seg {
+    NSPoint p1 = [seg pointAtIndex: 0];
+    NSPoint p2 = [seg pointAtIndex: 1];
+    NSPoint p3 = [seg pointAtIndex: 2];
+    NSPoint p4 = [seg pointAtIndex: 3];
     float maxC = 0.0;
     for (float t =0.0 ; t<=1.0; t+= 0.02) {
         CGFloat c = sqrt(curvatureSquaredForT(p1,p2,p3,p4,t));
@@ -236,11 +236,11 @@ static bool inited = false;
 // This is the main curvature comb drawing code. You need to have done
 // an initial pass to find the max curvature for scaling.
 
-- (void)drawCurvatureForSegment:(NSArray*)seg maxCurvature:(float)maxC{
-    NSPoint p1 = [seg[0] pointValue];
-    NSPoint p2 = [seg[1] pointValue];
-    NSPoint p3 = [seg[2] pointValue];
-    NSPoint p4 = [seg[3] pointValue];
+- (void)drawCurvatureForSegment:(GSPathSegment*)seg maxCurvature:(float)maxC{
+    NSPoint p1 = [seg pointAtIndex: 0];
+    NSPoint p2 = [seg pointAtIndex: 1];
+    NSPoint p3 = [seg pointAtIndex: 2];
+    NSPoint p4 = [seg pointAtIndex: 3];
 
     // Grab user options
     BOOL alwaysShow = [fade state] == NSOffState;

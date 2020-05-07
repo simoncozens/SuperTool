@@ -18,6 +18,7 @@
 #import <GlyphsCore/GSToolSelect.h>
 #import <GlyphsCore/GSLayer.h>
 #import <GlyphsCore/GSPath.h>
+#import <GlyphsCore/GSPathSegment.h>
 #import <GlyphsCore/GSGeometrieHelper.h>
 #import "GSNode+SCNodeUtils.h"
 #import "GSPath+SCPathUtils.h"
@@ -39,7 +40,7 @@ typedef enum {
 
 @interface SuperTool : GSToolSelect <NSWindowDelegate> {
     // Tunni lines data storage
-    NSArray* tunniSeg;
+    GSPathSegment* tunniSeg;
     bool tunniDraggingLine;
     GSNode* tunniSegP2;
     GSNode* tunniSegP3;
@@ -74,7 +75,7 @@ typedef enum {
 - (BOOL) multipleSegmentsSelected;
 - (BOOL) anyCurvesSelected;
 
-- (void)iterateOnCurvedSegmentsOfLayer:(GSLayer*)l withBlock:(void (^)(NSArray*seg))handler;
+- (void)iterateOnCurvedSegmentsOfLayer:(GSLayer*)l withBlock:(void (^)(GSPathSegment*seg))handler;
 
 @end
 

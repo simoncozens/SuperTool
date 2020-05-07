@@ -86,11 +86,11 @@ NSMutableArray* rainbow;
         int i =0;
         NSArray* segs = [p segments];
         while (i < [segs count]) {
-            NSArray *thisSeg = [segs objectAtIndex: i];
-            if ([thisSeg count] == 2) {
+            GSPathSegment *thisSeg = [segs objectAtIndex: i];
+            if (thisSeg.countOfPoints == 2) {
                 // Set up line intersection
-                NSPoint segstart = [[thisSeg objectAtIndex:0] pointValue];
-                NSPoint segend = [[thisSeg objectAtIndex:1] pointValue];
+                NSPoint segstart = [thisSeg pointAtIndex:0];
+                NSPoint segend = [thisSeg pointAtIndex:1];
                 NSPoint pt = GSIntersectLineLine(startPoint, endPoint, segstart, segend);
                 if (pt.x != NSNotFound && pt.y != NSNotFound) {
                     CGFloat t = GSDistance(segstart,pt) / GSDistance(segstart, segend);
@@ -98,10 +98,10 @@ NSMutableArray* rainbow;
                     [intersections addObject: intersection];
                 }
             } else {
-                NSPoint segstart = [[thisSeg objectAtIndex:0] pointValue];
-                NSPoint handle1 = [[thisSeg objectAtIndex:1] pointValue];
-                NSPoint handle2 = [[thisSeg objectAtIndex:2] pointValue];
-                NSPoint segend = [[thisSeg objectAtIndex:3] pointValue];
+                NSPoint segstart = [thisSeg pointAtIndex:0];
+                NSPoint handle1 = [thisSeg pointAtIndex:1];
+                NSPoint handle2 = [thisSeg pointAtIndex:2];
+                NSPoint segend = [thisSeg pointAtIndex:3];
                 NSArray* localIntersections = GSIntersectBezier3Line(segstart, handle1, handle2, segend, startPoint, endPoint);
                 for (id _pt in localIntersections) {
                     NSPoint pt = [_pt pointValue];
