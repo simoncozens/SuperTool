@@ -94,8 +94,8 @@ bool initDone = false;
                     tunniDraggingLine = false;
                 gotOne:
                     tunniSeg = seg;
-                    tunniSegP2 = [currentLayer nodeAtPoint:p2 excludeNode:NULL tollerance:0.5];
-                    tunniSegP3 = [currentLayer nodeAtPoint:p3 excludeNode:NULL tollerance:0.5];
+                    tunniSegP2 = [currentLayer nodeAtPoint:p2 excludeNode:NULL ignoreLocked:FALSE tolerance:0.5];
+                    tunniSegP3 = [currentLayer nodeAtPoint:p3 excludeNode:NULL ignoreLocked:FALSE tolerance:0.5];
                     [[currentLayer undoManager] beginUndoGrouping];
                     return;
                 }
@@ -145,12 +145,12 @@ bool initDone = false;
     GSNode *n;
     if (tunniSegP2) {
         [tunniSegP2 setPosition:newP2];
-        n =[currentLayer nodeAtPoint:p1 excludeNode:NULL tollerance:0.5];
+        n =[currentLayer nodeAtPoint:p1 excludeNode:NULL ignoreLocked:FALSE tolerance:0.5];
         if (n) [n correct];
     }
     if (tunniSegP3) {
         [tunniSegP3 setPosition:newP3];
-        n = [currentLayer nodeAtPoint:p4 excludeNode:NULL tollerance:0.5];
+        n = [currentLayer nodeAtPoint:p4 excludeNode:NULL ignoreLocked:FALSE tolerance:0.5];
         if (n) [n correct];
     }
 }
