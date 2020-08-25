@@ -20,6 +20,8 @@
 #import "SuperTool+Callipers.h"
 #import "SuperTool+Coverage.h"
 
+static NSImage *_toolBarIcon = nil;
+
 @implementation SuperTool
 
 - (id)init {
