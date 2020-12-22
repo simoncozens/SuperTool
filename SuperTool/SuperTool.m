@@ -23,14 +23,14 @@
 @implementation SuperTool
 
 - (id)init {
-	self = [super init];
+    self = [super init];
     NSArray *arrayOfStuff;
-	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
-	if (thisBundle) {
-		// The toolbar icon:
-		_toolBarIcon = [[NSImage alloc] initWithContentsOfFile:[thisBundle pathForImageResource:@"ToolbarIconTemplate"]];
-		[_toolBarIcon setTemplate:YES];
-	}
+    NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
+    if (thisBundle) {
+        // The toolbar icon:
+        _toolBarIcon = [[NSImage alloc] initWithContentsOfFile:[thisBundle pathForImageResource:@"ToolbarIconTemplate"]];
+        [_toolBarIcon setTemplate:YES];
+    }
 
     [self initTunni];
     [self initHarmonize];
@@ -65,32 +65,32 @@
     return self;
 }
 
-- (NSUInteger)interfaceVersion {
-	// Distinguishes the API verison the plugin was built for. Return 1.
-	return 1;
+- (NSUInteger) interfaceVersion {
+    // Distinguishes the API verison the plugin was built for. Return 1.
+    return 1;
 }
 
-- (NSUInteger)groupID {
-	// Return a number between 50 and 1000 to position the icon in the toolbar.
-	return 99;
+- (NSUInteger) groupID {
+    // Return a number between 50 and 1000 to position the icon in the toolbar.
+    return 99;
 }
 
-- (NSString *)trigger {
+- (NSString *) trigger {
     return @"u";
 }
 
-- (NSString *)title {
-	// return the name of the tool as it will appear in the tooltip of in the toolbar.
-	return @"SuperTool";
+- (NSString *) title {
+    // return the name of the tool as it will appear in the tooltip of in the toolbar.
+    return @"SuperTool";
 }
 
-- (BOOL)willSelectTempTool:(id)tempTool {
+- (BOOL) willSelectTempTool:(id)tempTool {
     if ([[[tempTool class] description] isEqualToString:@"GlyphsToolSelect"]) return NO;
     return YES;
 }
 
-- (NSMenu *)defaultContextMenu {
-	// Adds items to the context menu.
+- (NSMenu *) defaultContextMenu {
+    // Adds items to the context menu.
     NSMenu *theMenu = [super defaultContextMenu];
     [self addTunniToContextMenu:theMenu];
     [self addCurvatureToContextMenu:theMenu];
@@ -99,7 +99,7 @@
     return theMenu;
 }
 
-- (void)addMenuItemsForEvent:(NSEvent *)theEvent toMenu:(NSMenu *)theMenu {
+- (void) addMenuItemsForEvent:(NSEvent *)theEvent toMenu:(NSMenu *)theMenu {
     [super addMenuItemsForEvent:theEvent toMenu:theMenu];
 
     [theMenu insertItem:[NSMenuItem separatorItem] atIndex:0];
@@ -141,7 +141,7 @@
     return FALSE;
 }
 
-- (void)iterateOnCurvedSegmentsOfLayer:(GSLayer*)l withBlock:(void (^)(GSPathSegment*seg))handler {
+- (void) iterateOnCurvedSegmentsOfLayer:(GSLayer*)l withBlock:(void (^)(GSPathSegment*seg))handler {
     GSPath *p;
     for (p in l.shapes) {
         if (![p isKindOfClass:[GSPath class]]) continue;
@@ -176,21 +176,21 @@
     [self showCoverage:Layer];
 }
 
-- (void)mouseDown:(NSEvent *)theEvent {
+- (void) mouseDown:(NSEvent *)theEvent {
     if ([theEvent modifierFlags] & NSEventModifierFlagOption) {
         return [self callipersMouseDown:theEvent];
     }
     [self tunniMouseDown:theEvent];
 }
 
-- (void)mouseDragged:(NSEvent *)theEvent {
+- (void) mouseDragged:(NSEvent *)theEvent {
     if ([theEvent modifierFlags] & NSEventModifierFlagOption) {
         return [self callipersMouseDragged:theEvent];
     }
     [self tunniMouseDragged:theEvent];
 }
 
-- (void)mouseUp:(NSEvent *)theEvent {
+- (void) mouseUp:(NSEvent *)theEvent {
     if ([theEvent modifierFlags] & NSEventModifierFlagOption) {
         return [self callipersMouseUp:theEvent];
     }
