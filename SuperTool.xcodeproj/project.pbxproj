@@ -62,7 +62,6 @@
 		F4B03C981CC88E7100564F32 /* SuperTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SuperTool.h; sourceTree = "<group>"; };
 		F4B03C991CC88E7100564F32 /* SuperTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SuperTool.m; sourceTree = "<group>"; };
 		F4B03C9C1CC88E7100564F32 /* ToolbarIconTemplate.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = ToolbarIconTemplate.pdf; sourceTree = "<group>"; };
-		F4B03C9E1CC88E7100564F32 /* GlyphsCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GlyphsCore.framework; path = /Applications/Glyphs.app/Contents/Frameworks/GlyphsCore.framework; sourceTree = "<absolute>"; };
 		F4B03CA01CC88E7100564F32 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F4C6A21E1E98B28C008A62B7 /* GSNode+SCNodeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GSNode+SCNodeUtils.h"; sourceTree = "<group>"; };
 		F4C6A21F1E98B28C008A62B7 /* GSNode+SCNodeUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GSNode+SCNodeUtils.m"; sourceTree = "<group>"; };
@@ -148,7 +147,6 @@
 			isa = PBXGroup;
 			children = (
 				F4B03C9C1CC88E7100564F32 /* ToolbarIconTemplate.pdf */,
-				F4B03C9E1CC88E7100564F32 /* GlyphsCore.framework */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
