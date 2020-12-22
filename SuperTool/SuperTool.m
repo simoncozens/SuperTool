@@ -148,7 +148,7 @@
         NSArray<GSPathSegment *> *segs = p.segments;
         GSPathSegment* seg;
         for (seg in segs) {
-            NSLog(@"Looking at segment %@", seg);
+            SCLog(@"Looking at segment %@", seg);
             if (seg.countOfPoints == 4) {
                 handler(seg);
             }

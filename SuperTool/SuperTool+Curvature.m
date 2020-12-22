@@ -139,12 +139,12 @@ static bool inited = false;
     if (doDrawCurves) {
         [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(GSPathSegment* seg) {
             float thisC = [self maxCurvatureForSegment:seg];
-            NSLog(@"Max curve for segments: %f", thisC);
+            SCLog(@"Max curve for segments: %f", thisC);
             if (thisC > maxC) maxC = thisC;
         }];
     }
     maxC = MIN(maxC, 1);
-    NSLog(@"Max curve for glyph: %f", maxC);
+    SCLog(@"Max curve for glyph: %f", maxC);
     [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(GSPathSegment* seg) {
         if (doDrawCurves) { [self drawCurvatureForSegment:seg maxCurvature:maxC]; }
         if (doDrawRainbows) { [self drawRainbowsForSegment:seg]; }
@@ -199,7 +199,7 @@ static bool inited = false;
         CGFloat angle = GSAngleOfVector(normal);
         if (angle <0) { angle = 180+angle; }
         angle = fmod(angle,90.0);
-        NSLog(@"Normal: %f,%f; angle: %f; modangle: %f", normal.x,normal.y, GSAngleOfVector(normal), angle);
+        SCLog(@"Normal: %f,%f; angle: %f; modangle: %f", normal.x,normal.y, GSAngleOfVector(normal), angle);
         // 0 -> 1, 1, 0,
         // PI/2 -> 1, 0.5 ,0
         // PI ->  0, 0, 0
