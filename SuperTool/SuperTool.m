@@ -158,9 +158,9 @@
 
 - (void) drawBackgroundForLayer:(GSLayer *)layer options:(NSDictionary *)options {
     if ([simplifyWindow isKeyWindow]) {
+        [[NSColor secondaryLabelColor] set];
         for (GSPath* p in [copiedPaths allValues]) {
             NSBezierPath* bez = [p bezierPath];
-            [[NSColor colorWithCalibratedRed:0.2 green:0.2 blue:0.2 alpha:0.8] set];
             [bez setLineWidth:0];
             CGFloat dash[2] = {1.0,1.0};
             [bez setLineDash:dash count:2 phase:0];
