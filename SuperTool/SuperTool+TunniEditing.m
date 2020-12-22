@@ -240,14 +240,14 @@ bool initDone = false;
         //        NSAffineTransform *rotate = [NSAffineTransform transform];
         //        [rotate rotateByDegrees:GSAngleOfVector(GSSubtractPoints(p2, p1)) / M_PI * 180.0];
         //        [rotate concat];
-        [label drawAtPoint:GSMiddlePoint(p1,p2)];
+        [label drawAtPoint:GSMiddlePointLine(p1,p2)];
         //        [rotate invert];
         //        [rotate concat];
     }
     if (eDistance > 0) {
         CGFloat yPercent = GSDistance(p3,p4) / eDistance;
         NSAttributedString *label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%.1f%%", yPercent*100.0] attributes:attrs];
-        [label drawAtPoint:GSMiddlePoint(p3,p4)];
+        [label drawAtPoint:GSMiddlePointLine(p3,p4)];
     }
     if (sDistance > 0 && eDistance > 0) {
         NSBezierPath* bez = [NSBezierPath bezierPath];
