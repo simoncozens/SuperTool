@@ -92,10 +92,10 @@
 - (NSMenu *) defaultContextMenu {
     // Adds items to the context menu.
     NSMenu *theMenu = [super defaultContextMenu];
+    [theMenu insertItem:[NSMenuItem separatorItem] atIndex:0];
     [self addTunniToContextMenu:theMenu];
     [self addCurvatureToContextMenu:theMenu];
     [self addCoverageToContextMenu:theMenu];
-    [theMenu insertItem:[NSMenuItem separatorItem] atIndex:3];
     return theMenu;
 }
 
