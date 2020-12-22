@@ -17,7 +17,6 @@
 		F49A86D01CF08B8500B14CC2 /* SuperTool+Harmonize.m in Sources */ = {isa = PBXBuildFile; fileRef = F49A86CF1CF08B8500B14CC2 /* SuperTool+Harmonize.m */; };
 		F4B03C921CC88E7100564F32 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4B03C911CC88E7100564F32 /* Cocoa.framework */; };
 		F4B03C951CC88E7100564F32 /* SuperTool-Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = F4B03C941CC88E7100564F32 /* SuperTool-Prefix.pch */; };
-		F4B03C971CC88E7100564F32 /* SuperTool-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4B03C961CC88E7100564F32 /* SuperTool-Info.plist */; };
 		F4B03C9A1CC88E7100564F32 /* SuperTool.m in Sources */ = {isa = PBXBuildFile; fileRef = F4B03C991CC88E7100564F32 /* SuperTool.m */; };
 		F4B03C9D1CC88E7100564F32 /* ToolbarIconTemplate.pdf in Resources */ = {isa = PBXBuildFile; fileRef = F4B03C9C1CC88E7100564F32 /* ToolbarIconTemplate.pdf */; };
 		F4C6A2261E98B28C008A62B7 /* GSNode+SCNodeUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F4C6A21F1E98B28C008A62B7 /* GSNode+SCNodeUtils.m */; };
@@ -49,7 +48,7 @@
 		F4411BCC1EB86C7B00F4D64B /* SuperTool+Callipers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SuperTool+Callipers.m"; sourceTree = "<group>"; };
 		F479451C1CF699C600EB214B /* SuperTool+Simplify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SuperTool+Simplify.h"; sourceTree = "<group>"; };
 		F479451D1CF699C600EB214B /* SuperTool+Simplify.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SuperTool+Simplify.m"; sourceTree = "<group>"; };
-		F49910672463F08D00E305DE /* GlyphsCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GlyphsCore.framework; path = "../../../../../Applications/Glyphs3.app/Contents/Frameworks/GlyphsCore.framework"; sourceTree = "<group>"; };
+		F49910672463F08D00E305DE /* GlyphsCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GlyphsCore.framework; path = "/Applications/Glyphs 3.app/Contents/Frameworks/GlyphsCore.framework"; sourceTree = "<absolute>"; };
 		F49A86C81CF055C800B14CC2 /* SuperTool+TunniEditing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SuperTool+TunniEditing.h"; sourceTree = "<group>"; };
 		F49A86C91CF055C800B14CC2 /* SuperTool+TunniEditing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SuperTool+TunniEditing.m"; sourceTree = "<group>"; };
 		F49A86CB1CF0899000B14CC2 /* SuperTool+Curvature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SuperTool+Curvature.h"; sourceTree = "<group>"; };
@@ -99,6 +98,7 @@
 				F4B03C8F1CC88E7100564F32 /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		F4B03C8F1CC88E7100564F32 /* Products */ = {
 			isa = PBXGroup;
@@ -233,7 +233,6 @@
 			files = (
 				F4CA636F1CE04BA6002EA26E /* SimplifyInterface.xib in Resources */,
 				F4B03C9D1CC88E7100564F32 /* ToolbarIconTemplate.pdf in Resources */,
-				F4B03C971CC88E7100564F32 /* SuperTool-Info.plist in Resources */,
 				F4B03C951CC88E7100564F32 /* SuperTool-Prefix.pch in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -370,9 +369,9 @@
 				CONFIGURATION_BUILD_DIR = "$(USER_LIBRARY_DIR)/Application Support/Glyphs/Plugins/";
 				DEPLOYMENT_LOCATION = YES;
 				DEVELOPMENT_TEAM = GHYRZM4TBD;
-				DSTROOT = "$(USER_LIBRARY_DIR)/Application Support/Glyphs/Plugins";
+				DSTROOT = "$(USER_LIBRARY_DIR)/Application Support/Glyphs 3/Plugins";
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(SYSTEM_APPS_DIR)/Glyphs3.app/Contents/Frameworks",
+					"\"$(SYSTEM_APPS_DIR)/Glyphs 3.app/Contents/Frameworks\"",
 					"$(PROJECT_DIR)/SuperTool/",
 				);
 				GCC_PREFIX_HEADER = "SuperTool/SuperTool-Prefix.pch";
@@ -382,7 +381,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.simon-cozens.SuperTool";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = glyphsTool;
 			};
 			name = Debug;
@@ -395,7 +393,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = GHYRZM4TBD;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(SYSTEM_APPS_DIR)/Glyphs3.app/Contents/Frameworks",
+					"\"$(SYSTEM_APPS_DIR)/Glyphs 3.app/Contents/Frameworks\"",
 					"$(PROJECT_DIR)/SuperTool/",
 				);
 				GCC_PREFIX_HEADER = "SuperTool/SuperTool-Prefix.pch";
@@ -405,7 +403,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.simon-cozens.SuperTool";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = NO;
 				WRAPPER_EXTENSION = glyphsTool;
 			};
 			name = Release;
