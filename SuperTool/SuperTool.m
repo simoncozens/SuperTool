@@ -156,7 +156,7 @@
     }
 }
 
-- (void)drawForegroundForLayer:(GSLayer *)layer {
+- (void) drawBackgroundForLayer:(GSLayer *)layer options:(NSDictionary *)options {
     if ([simplifyWindow isKeyWindow]) {
         for (GSPath *p in [copiedPaths allValues]) {
             NSBezierPath* bez = [p bezierPath];
@@ -167,9 +167,6 @@
             [bez stroke];
         }
     }
-}
-
-- (void)drawBackgroundForLayer:(GSLayer*)Layer {
     [self drawTunniBackground:Layer];
     [self drawCurvatureBackground:Layer];
     [self drawCallipers:Layer];
