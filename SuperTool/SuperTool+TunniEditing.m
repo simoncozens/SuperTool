@@ -22,25 +22,23 @@ NSMenuItem* drawTunni;
 NSMenuItem* drawTunniTwo;
 NSString* drawTunniDefault = @"org.simon-cozens.SuperTool.drawingTunni";
 
-const float DEFAULT_ZOOM_THRESHOLD = 2.0;
+const float DEFAULT_ZOOM_THRESHOLD = 1.0;
 NSString* lineZoomDefault = @"org.simon-cozens.SuperTool.tunniZoomThreshold";
 bool initDone = false;
 
 - (void) initTunni {
     drawTunni = [[NSMenuItem alloc] initWithTitle:@"Show Tunni lines" action:@selector(displayTunniState:) keyEquivalent:@"U"];
+    [drawTunni setKeyEquivalentModifierMask:NSEventModifierFlagCommand];
     drawTunniTwo = [[NSMenuItem alloc] initWithTitle:@"Show Tunni lines" action:@selector(displayTunniState:) keyEquivalent:@""];
     
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:drawTunniDefault]boolValue]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:drawTunniDefault]) {
         [drawTunni setState:NSOnState];
         [drawTunniTwo setState:NSOnState];
     }
-    float tz = [[[NSUserDefaults standardUserDefaults] objectForKey:lineZoomDefault]floatValue];
-    if (!tz) {
-        [[NSUserDefaults standardUserDefaults] setFloat:DEFAULT_ZOOM_THRESHOLD forKey:lineZoomDefault];
-    }
+    [[NSUserDefaults standardUserDefaults] registerDefaults:@{lineZoomDefault: @(DEFAULT_ZOOM_THRESHOLD)}];
+    
     NSMenuItem* viewMenu = [[[NSApplication sharedApplication] mainMenu] itemAtIndex:6];
-    [drawTunni setKeyEquivalentModifierMask:NSEventModifierFlagCommand];
- 
+
     NSMenuItem* editMenu = [[[NSApplication sharedApplication] mainMenu] itemAtIndex:2];
     NSMenuItem* balanceItem = [[NSMenuItem alloc] initWithTitle:@"Balance" action:@selector(balance) keyEquivalent:@"b"];
     
@@ -78,8 +76,8 @@ bool initDone = false;
     GSLayer* currentLayer = [_editViewController.graphicView activeLayer];
     NSPoint start = [_editViewController.graphicView getActiveLocation: theEvent];
     /* Would love to use the block here but variable scoping rules don't allow it */
-    GSPath *p;
-    float tunniZoomThreshold = [[[NSUserDefaults standardUserDefaults] objectForKey:lineZoomDefault]floatValue];
+    GSPath* p;
+    float tunniZoomThreshold = [[NSUserDefaults standardUserDefaults] floatForKey:lineZoomDefault];
     for (p in currentLayer.shapes) {
         if (![p isKindOfClass:[GSPath class]]) continue;
         GSPathSegment* seg;
@@ -89,7 +87,7 @@ bool initDone = false;
                 NSPoint p2 = [seg pointAtIndex:1];
                 NSPoint p3 = [seg pointAtIndex:2];
                 NSPoint p4 = [seg pointAtIndex:3];
-                NSPoint t = GSIntersectLineLineUnlimited(p1,p2,p3,p4);
+                NSPoint t = GSIntersectLineLineUnlimited(p1, p2, p3, p4);
                 if (GSDistance(t, start) <= HANDLE_SIZE/2) {
                     // We have a winner!
                     tunniDraggingLine = false;
@@ -101,7 +99,7 @@ bool initDone = false;
                     return;
                 }
                 if (GSDistanceOfPointFromLineSegment(start, p2, p3) <= tunniZoomThreshold) {
-                    if (GSDistance(start, p2) <= HANDLE_SIZE/2 || GSDistance(start, p3) <= HANDLE_SIZE/2) {
+                    if (GSDistance(start, p2) <= HANDLE_SIZE/2 || GSDistance(start, p3) <= HANDLE_SIZE / 2) {
                         // Actually dragging the handle, not the line.
                         return [super mouseDown:theEvent];
                     }
@@ -123,17 +121,17 @@ bool initDone = false;
     NSPoint p2 = [tunniSeg pointAtIndex:1];
     NSPoint p3 = [tunniSeg pointAtIndex:2];
     NSPoint p4 = [tunniSeg pointAtIndex:3];
-    NSPoint tunniPoint = GSIntersectLineLineUnlimited(p1,p2,p3,p4);
+    NSPoint tunniPoint = GSIntersectLineLineUnlimited(p1, p2, p3, p4);
     CGFloat sDistance = GSDistance(p1,tunniPoint);
     CGFloat eDistance = GSDistance(p4, tunniPoint);
-    CGFloat xPercent = GSDistance(p1,p2) / sDistance;
-    CGFloat yPercent = GSDistance(p3,p4) / eDistance;
+    CGFloat xPercent = GSDistance(p1, p2) / sDistance;
+    CGFloat yPercent = GSDistance(p3, p4) / eDistance;
     NSPoint newP2;
     NSPoint newP3;
     if (tunniDraggingLine) {
         CGFloat sign = (GSPointIsLeftOfLine(p2, p3, tunniPoint) == GSPointIsLeftOfLine(p2, p3, Loc)) ? 1.0 : -1.0;
-        xPercent += GSDistanceOfPointFromLineSegment(Loc, p2, p3) / ((sDistance+eDistance)/2) * sign;
-        yPercent += GSDistanceOfPointFromLineSegment(Loc, p2, p3) / ((sDistance+eDistance)/2) * sign;
+        xPercent += GSDistanceOfPointFromLineSegment(Loc, p2, p3) / ((sDistance+eDistance) / 2) * sign;
+        yPercent += GSDistanceOfPointFromLineSegment(Loc, p2, p3) / ((sDistance+eDistance) / 2) * sign;
         /* ??? */
         newP2 = GSLerp(p1, tunniPoint, xPercent);
         newP3 = GSLerp(p4, tunniPoint, yPercent);
@@ -176,11 +174,11 @@ bool initDone = false;
         // Find the segment for this node and add it to the set
         if ([n type] == OFFCURVE && [[n nextNode] type] == OFFCURVE) {
             // Add prev, this, next, and next next to the set
-            NSArray* a = [NSArray arrayWithObjects:[n prevNode],n,[n nextNode],[[n nextNode] nextNode],nil];
+            NSArray* a = [NSArray arrayWithObjects:[n prevNode], n, [n nextNode], [[n nextNode] nextNode],nil];
             [segments addObject:a];
         } else if ([n type] == OFFCURVE && [[n prevNode] type] == OFFCURVE) {
             // Add prev prev, prev, this and next to the set
-            NSArray* a = [NSArray arrayWithObjects:[[n prevNode] prevNode],[n prevNode],n,[n nextNode],nil];
+            NSArray* a = [NSArray arrayWithObjects:[[n prevNode] prevNode], [n prevNode], n, [n nextNode],nil];
             [segments addObject:a];
         }
     }
@@ -191,11 +189,11 @@ bool initDone = false;
         NSPoint p3 = [(GSNode*)seg[2] position];
         NSPoint p4 = [(GSNode*)seg[3] position];
         NSPoint t = GSIntersectLineLineUnlimited(p1,p2,p3,p4);
-        CGFloat sDistance = GSDistance(p1,t);
+        CGFloat sDistance = GSDistance(p1, t);
         CGFloat eDistance = GSDistance(p4, t);
         if (sDistance <= 0 || eDistance <= 0) return;
-        CGFloat xPercent = GSDistance(p1,p2) / sDistance;
-        CGFloat yPercent = GSDistance(p3,p4) / eDistance;
+        CGFloat xPercent = GSDistance(p1, p2) / sDistance;
+        CGFloat yPercent = GSDistance(p3, p4) / eDistance;
         if (xPercent > 1 && yPercent >1) return; // Inflection point
         if (xPercent < 0.01 && yPercent <0.01) return; // Inflection point
         CGFloat avg = (xPercent+yPercent)/2.0;
@@ -212,17 +210,17 @@ bool initDone = false;
     NSPoint p2 = [seg pointAtIndex:1];
     NSPoint p3 = [seg pointAtIndex:2];
     NSPoint p4 = [seg pointAtIndex:3];
-    NSPoint tunniPoint = GSIntersectLineLineUnlimited(p1,p2,p3,p4);
-    CGFloat sDistance = GSDistance(p1,tunniPoint);
+    NSPoint tunniPoint = GSIntersectLineLineUnlimited(p1, p2, p3, p4);
+    CGFloat sDistance = GSDistance(p1, tunniPoint);
     CGFloat eDistance = GSDistance(p4, tunniPoint);
     CGFloat currentZoom =  [_editViewController.graphicView scale];
     NSColor* col;
-    float tunniZoomThreshold = [[[NSUserDefaults standardUserDefaults] objectForKey:lineZoomDefault]floatValue];
+    float tunniZoomThreshold = [[NSUserDefaults standardUserDefaults] floatForKey:lineZoomDefault];
     tunniZoomThreshold /= (float)upem;
     tunniZoomThreshold *= 1000.0;
     
     if (currentZoom < tunniZoomThreshold)
-        col = [NSColor colorWithCalibratedRed: 0 green:0 blue:1 alpha:currentZoom-tunniZoomThreshold/2.0];
+        col = [NSColor colorWithCalibratedRed:0 green:0 blue:1 alpha:currentZoom - tunniZoomThreshold / 2.0];
     else
         col = [NSColor blueColor];
     [col set];
@@ -230,30 +228,30 @@ bool initDone = false;
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     [paragraphStyle setAlignment:NSTextAlignmentCenter];
     NSDictionary* attrs = @{
-                            NSFontAttributeName: [NSFont labelFontOfSize: 10/currentZoom ],
+                            NSFontAttributeName:[NSFont labelFontOfSize:10 / currentZoom],
                             NSForegroundColorAttributeName:col,
                             NSParagraphStyleAttributeName:paragraphStyle
                             };
     if (sDistance > 0) {
-        CGFloat xPercent = GSDistance(p1,p2) / sDistance;
-        NSAttributedString *label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%.1f%%", xPercent*100.0] attributes:attrs];
+        CGFloat xPercent = GSDistance(p1, p2) / sDistance;
+        NSAttributedString *label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%.1f%%", xPercent * 100.0] attributes:attrs];
         //        NSAffineTransform *rotate = [NSAffineTransform transform];
         //        [rotate rotateByDegrees:GSAngleOfVector(GSSubtractPoints(p2, p1)) / M_PI * 180.0];
         //        [rotate concat];
-        [label drawAtPoint:GSMiddlePointLine(p1,p2)];
+        [label drawAtPoint:GSMiddlePointLine(p1, p2)];
         //        [rotate invert];
         //        [rotate concat];
     }
     if (eDistance > 0) {
-        CGFloat yPercent = GSDistance(p3,p4) / eDistance;
-        NSAttributedString *label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%.1f%%", yPercent*100.0] attributes:attrs];
-        [label drawAtPoint:GSMiddlePointLine(p3,p4)];
+        CGFloat yPercent = GSDistance(p3, p4) / eDistance;
+        NSAttributedString* label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%.1f%%", yPercent * 100.0] attributes:attrs];
+        [label drawAtPoint:GSMiddlePointLine(p3, p4)];
     }
     if (sDistance > 0 && eDistance > 0) {
         NSBezierPath* bez = [NSBezierPath bezierPath];
-        CGFloat dash[2] = {1.0,1.0};
+        CGFloat dash[2] = {1.0, 1.0};
         [bez setLineWidth:0.0];
-        [bez appendBezierPathWithArcWithCenter:tunniPoint radius:HANDLE_SIZE/currentZoom startAngle:0 endAngle:359];
+        [bez appendBezierPathWithArcWithCenter:tunniPoint radius:HANDLE_SIZE / currentZoom startAngle:0 endAngle:359];
         [bez stroke];
         [bez closePath];
         [bez setLineDash:dash count:2 phase:0];
@@ -263,13 +261,12 @@ bool initDone = false;
     }
 }
 
-- (void)drawTunniBackground:(GSLayer*)Layer {
+- (void) drawTunniBackground:(GSLayer* )Layer {
     BOOL doDrawTunni = [drawTunni state] == NSOnState;
     if (!doDrawTunni) return;
     NSUInteger upem = Layer.font.unitsPerEm;
     [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(GSPathSegment* seg) {
         [self drawTunniLinesForSegment:seg upem:upem];
     }];
-
 }
 @end

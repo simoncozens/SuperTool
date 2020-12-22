@@ -18,12 +18,12 @@
 
 @interface SuperTool (TunniEditing)
 
-- (void)initTunni;
+- (void) initTunni;
 - (void) addTunniToContextMenu:(NSMenu*)theMenu;
 - (void) displayTunniState:(id)sender;
-- (void)balance;
-- (void)drawTunniBackground:(GSLayer*)Layer;
-- (void)tunniMouseDown:(NSEvent*)theEvent;
-- (void)tunniMouseDragged:(NSEvent*)theEvent;
-- (void)tunniMouseUp:(NSEvent*)theEvent;
+- (void) balance;
+- (void) drawTunniBackground:(GSLayer*)Layer;
+- (void) tunniMouseDown:(NSEvent*)theEvent;
+- (void) tunniMouseDragged:(NSEvent*)theEvent;
+- (void) tunniMouseUp:(NSEvent*)theEvent;
 @end

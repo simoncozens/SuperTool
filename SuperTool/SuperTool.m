@@ -142,10 +142,10 @@
 }
 
 - (void) iterateOnCurvedSegmentsOfLayer:(GSLayer*)l withBlock:(void (^)(GSPathSegment*seg))handler {
-    GSPath *p;
+    GSPath* p;
     for (p in l.shapes) {
         if (![p isKindOfClass:[GSPath class]]) continue;
-        NSArray<GSPathSegment *> *segs = p.segments;
+        NSArray<GSPathSegment*>* segs = p.segments;
         GSPathSegment* seg;
         for (seg in segs) {
             SCLog(@"Looking at segment %@", seg);
@@ -158,7 +158,7 @@
 
 - (void) drawBackgroundForLayer:(GSLayer *)layer options:(NSDictionary *)options {
     if ([simplifyWindow isKeyWindow]) {
-        for (GSPath *p in [copiedPaths allValues]) {
+        for (GSPath* p in [copiedPaths allValues]) {
             NSBezierPath* bez = [p bezierPath];
             [[NSColor colorWithCalibratedRed:0.2 green:0.2 blue:0.2 alpha:0.8] set];
             [bez setLineWidth:0];
@@ -167,10 +167,10 @@
             [bez stroke];
         }
     }
-    [self drawTunniBackground:Layer];
-    [self drawCurvatureBackground:Layer];
-    [self drawCallipers:Layer];
-    [self showCoverage:Layer];
+    [self drawTunniBackground:layer];
+    [self drawCurvatureBackground:layer];
+    [self drawCallipers:layer];
+    [self showCoverage:layer];
 }
 
 - (void) mouseDown:(NSEvent *)theEvent {

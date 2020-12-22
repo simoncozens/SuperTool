@@ -17,7 +17,7 @@
 #import "SuperTool.h"
 
 @interface SuperTool (Coverage)
-- (void)initCoverage;
-- (void) addCoverageToContextMenu:(NSMenu*)theMenu;
-- (void) showCoverage:(GSLayer*)Layer;
+- (void) initCoverage;
+- (void) addCoverageToContextMenu:(NSMenu* )theMenu;
+- (void) showCoverage:(GSLayer* )Layer;
 @end

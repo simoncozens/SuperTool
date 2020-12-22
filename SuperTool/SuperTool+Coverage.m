@@ -44,17 +44,17 @@ NSString* drawCoverageDefault = @"org.simon-cozens.SuperTool.drawingCoverage";
     BOOL doDrawCoverage = [drawCoverage state] == NSOnState;
     if (!doDrawCoverage) return;
     float cov = [Layer coverage];
-    NSPoint p = NSMakePoint(Layer.width/2,Layer.glyphMetrics.ascender);
+    NSPoint p = NSMakePoint(Layer.width / 2, Layer.glyphMetrics.ascender);
     CGFloat currentZoom =  [_editViewController.graphicView scale];
 
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     [paragraphStyle setAlignment:NSTextAlignmentCenter];
     NSDictionary* attrs = @{
-                            NSFontAttributeName: [NSFont labelFontOfSize: 10/currentZoom ],
+                            NSFontAttributeName: [NSFont labelFontOfSize:10 / currentZoom],
                             NSForegroundColorAttributeName:[NSColor redColor],
                             NSParagraphStyleAttributeName:paragraphStyle
                             };
-    NSAttributedString *label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Coverage: %.1f%%", cov*100.0] attributes:attrs];
+    NSAttributedString* label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Coverage: %.1f%%", cov * 100.0] attributes:attrs];
     [label drawAtPoint:p];
     
 }
