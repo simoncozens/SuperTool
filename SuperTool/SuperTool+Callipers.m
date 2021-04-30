@@ -192,7 +192,6 @@ NSMutableArray* rainbow;
     //    NSLog(@"Drawing!");
     [self computeRainbow];
     [self drawRainbow];
-    [super drawBackgroundForLayer:layer];
 }
 
 - (void) computeRainbow {

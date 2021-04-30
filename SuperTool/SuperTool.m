@@ -170,6 +170,7 @@
     [self drawTunniBackground:layer];
     [self drawCurvatureBackground:layer];
     [self drawCallipers:layer];
+    // [super drawBackgroundForLayer:layer];
     [self showCoverage:layer];
 }
 
