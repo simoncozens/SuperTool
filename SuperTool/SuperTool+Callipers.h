@@ -19,8 +19,8 @@
 
 @interface SuperTool (Callipers)
 - (void)initCallipers;
-- (void)drawCallipers:(GSLayer*)layer;
-- (void)callipersMouseDown:(NSEvent*)theEvent;
-- (void)callipersMouseDragged:(NSEvent*)theEvent;
-- (void)callipersMouseUp:(NSEvent*)theEvent;
+- (void)drawCallipers:(GSLayer *)layer;
+- (void)callipersMouseDown:(NSEvent *)theEvent;
+- (void)callipersMouseDragged:(NSEvent *)theEvent;
+- (void)callipersMouseUp:(NSEvent *)theEvent;
 @end

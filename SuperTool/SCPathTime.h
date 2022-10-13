@@ -15,17 +15,19 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <GlyphsCore/GSPath.h>
+
+@class GSPath;
 
 @interface SCPathTime : NSObject {
     @public NSInteger segId;
     @public CGFloat t;
-    @public GSPath* path;
+    @public GSPath *path;
 };
 
-- (SCPathTime*) initWithPath:(GSPath*)p SegId:(NSInteger)i t:(CGFloat)_t;
-- (int) compareWith:(SCPathTime*)t2;
-- (void) stepTimeBy:(float)step;
-- (NSPoint) point;
-+ (CGFloat) pathLength: (SCPathTime*)start to: (SCPathTime*) end;
+- (SCPathTime *)initWithPath:(GSPath *)p segId:(NSInteger)i t:(CGFloat)_t;
+- (int)compareWith:(SCPathTime *)t2;
+- (void)stepTimeBy:(float)step;
+- (NSPoint)point;
++ (CGFloat)pathLength:(SCPathTime *)start to:(SCPathTime *)end;
+
 @end

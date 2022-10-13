@@ -18,8 +18,8 @@
 
 @interface SuperTool (Harmonize)
 
-- (void) addHarmonizeItemToMenu:(NSMenu*)theMenu;
-- (void) harmonize:(GSNode*)a3;
-- (void) harmonize;
-- (void) initHarmonize;
+- (void)addHarmonizeItemToMenu:(NSMenu *)theMenu;
+- (void)harmonize:(GSNode *)a3;
+- (void)harmonize;
+- (void)initHarmonize;
 @end

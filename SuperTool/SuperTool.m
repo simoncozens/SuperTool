@@ -57,39 +57,39 @@
     [cornerSlider setTarget:self];
     [cornerSlider setAction:@selector(doSimplify)];
 
-    [simplifyOK setTarget: self];
+    [simplifyOK setTarget:self];
     [simplifyOK setAction:@selector(commitSimplify)];
-    [simplifyCancel setTarget: self];
+    [simplifyCancel setTarget:self];
     [simplifyCancel setAction:@selector(revertSimplify)];
     
     return self;
 }
 
-- (NSUInteger) interfaceVersion {
+- (NSUInteger)interfaceVersion {
     // Distinguishes the API verison the plugin was built for. Return 1.
     return 1;
 }
 
-- (NSUInteger) groupID {
+- (NSUInteger)groupID {
     // Return a number between 50 and 1000 to position the icon in the toolbar.
     return 99;
 }
 
-- (NSString *) trigger {
+- (NSString *)trigger {
     return @"u";
 }
 
-- (NSString *) title {
+- (NSString *)title {
     // return the name of the tool as it will appear in the tooltip of in the toolbar.
     return @"SuperTool";
 }
 
-- (BOOL) willSelectTempTool:(id)tempTool {
+- (BOOL)willSelectTempTool:(id)tempTool {
     if ([[[tempTool class] description] isEqualToString:@"GlyphsToolSelect"]) return NO;
     return YES;
 }
 
-- (NSMenu *) defaultContextMenu {
+- (NSMenu *)defaultContextMenu {
     // Adds items to the context menu.
     NSMenu *theMenu = [super defaultContextMenu];
     [theMenu insertItem:[NSMenuItem separatorItem] atIndex:0];
@@ -99,7 +99,7 @@
     return theMenu;
 }
 
-- (void) addMenuItemsForEvent:(NSEvent *)theEvent toMenu:(NSMenu *)theMenu {
+- (void)addMenuItemsForEvent:(NSEvent *)theEvent toMenu:(NSMenu *)theMenu {
     [super addMenuItemsForEvent:theEvent toMenu:theMenu];
 
     [theMenu insertItem:[NSMenuItem separatorItem] atIndex:0];
@@ -113,10 +113,10 @@
 }
 
 /* Have we clicked on more than one segment? (If we have, we can Simplify) */
-- (BOOL) multipleSegmentsSelected {
-    GSLayer* currentLayer = [_editViewController.graphicView activeLayer];
-    GSNode* n;
-    NSOrderedSet* sel = [currentLayer selection];
+- (BOOL)multipleSegmentsSelected {
+    GSLayer *currentLayer = [_editViewController.graphicView activeLayer];
+    GSNode *n;
+    NSOrderedSet *sel = [currentLayer selection];
     for (n in sel) {
         if ([n isKindOfClass:[GSNode class]] && [n type] != OFFCURVE) {
             if ([sel containsObject:[n nextOnCurve]]) return TRUE;
@@ -127,9 +127,9 @@
 }
 
 /* Have we clicked on either a handle or a node with two handles? */
-- (BOOL) anyCurvesSelected {
-    GSLayer* currentLayer = [_editViewController.graphicView activeLayer];
-    GSNode* n;
+- (BOOL)anyCurvesSelected {
+    GSLayer *currentLayer = [_editViewController.graphicView activeLayer];
+    GSNode *n;
     for (n in [currentLayer selection]) {
         if (![n isKindOfClass:[GSNode class]]) continue;
         if ([n type] == OFFCURVE && [[n nextNode] type] == OFFCURVE) {
@@ -141,12 +141,12 @@
     return FALSE;
 }
 
-- (void) iterateOnCurvedSegmentsOfLayer:(GSLayer*)l withBlock:(void (^)(GSPathSegment*seg))handler {
-    GSPath* p;
+- (void)iterateOnCurvedSegmentsOfLayer:(GSLayer *)l withBlock:(void (^)(GSPathSegment *seg))handler {
+    GSPath *p;
     for (p in l.shapes) {
         if (![p isKindOfClass:[GSPath class]]) continue;
-        NSArray<GSPathSegment*>* segs = p.segments;
-        GSPathSegment* seg;
+        NSArray <GSPathSegment *> *segs = p.segments;
+        GSPathSegment *seg;
         for (seg in segs) {
             SCLog(@"Looking at segment %@", seg);
             if (seg.countOfPoints == 4) {
@@ -156,13 +156,13 @@
     }
 }
 
-- (void) drawBackgroundForLayer:(GSLayer *)layer options:(NSDictionary *)options {
+- (void)drawBackgroundForLayer:(GSLayer *)layer options:(NSDictionary *)options {
     if ([simplifyWindow isKeyWindow]) {
         [[NSColor secondaryLabelColor] set];
-        for (GSPath* p in [copiedPaths allValues]) {
-            NSBezierPath* bez = [p bezierPath];
+        for (GSPath *p in [copiedPaths allValues]) {
+            NSBezierPath *bez = [p bezierPath];
             [bez setLineWidth:0];
-            CGFloat dash[2] = {1.0,1.0};
+            CGFloat dash[2] = {1.0, 1.0};
             [bez setLineDash:dash count:2 phase:0];
             [bez stroke];
         }
@@ -174,21 +174,21 @@
     [self showCoverage:layer];
 }
 
-- (void) mouseDown:(NSEvent *)theEvent {
+- (void)mouseDown:(NSEvent *)theEvent {
     if ([theEvent modifierFlags] & NSEventModifierFlagOption) {
         return [self callipersMouseDown:theEvent];
     }
     [self tunniMouseDown:theEvent];
 }
 
-- (void) mouseDragged:(NSEvent *)theEvent {
+- (void)mouseDragged:(NSEvent *)theEvent {
     if ([theEvent modifierFlags] & NSEventModifierFlagOption) {
         return [self callipersMouseDragged:theEvent];
     }
     [self tunniMouseDragged:theEvent];
 }
 
-- (void) mouseUp:(NSEvent *)theEvent {
+- (void)mouseUp:(NSEvent *)theEvent {
     if ([theEvent modifierFlags] & NSEventModifierFlagOption) {
         return [self callipersMouseUp:theEvent];
     }

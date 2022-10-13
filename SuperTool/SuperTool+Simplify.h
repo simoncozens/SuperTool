@@ -17,12 +17,13 @@
 #import "SuperTool.h"
 
 @interface SuperTool (Simplify)
-- (void) showSimplifyWindow;
+
+- (void)showSimplifyWindow;
 - (void)commitSimplify;
 - (void)revertSimplify;
 - (void)doSimplify;
 - (void)initSimplify;
 
-- (NSUInteger)splice:(GSPath*)newPath into:(GSPath*)path at:(NSRange)splice;
+- (NSUInteger)splice:(GSPath *)newPath into:(GSPath *)path at:(NSRange)splice;
 
 @end

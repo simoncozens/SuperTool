@@ -40,10 +40,10 @@ typedef enum {
 
 @interface SuperTool : GSToolSelect <NSWindowDelegate> {
     // Tunni lines data storage
-    GSPathSegment* tunniSeg;
+    GSPathSegment *tunniSeg;
     bool tunniDraggingLine;
-    GSNode* tunniSegP2;
-    GSNode* tunniSegP3;
+    GSNode *tunniSegP2;
+    GSNode *tunniSegP3;
 
     // Simplify interface
     IBOutlet NSWindow *simplifyWindow;
@@ -53,18 +53,18 @@ typedef enum {
     __weak IBOutlet NSSlider *cornerSlider;
 
     // Simplify data storage
-    NSMutableArray* simplifySegSet;
-    NSMutableArray* simplifySpliceSet;
-    NSMutableArray* simplifyPathSet;
+    NSMutableArray *simplifySegSet;
+    NSMutableArray *simplifySpliceSet;
+    NSMutableArray *simplifyPathSet;
     NSMutableDictionary *copiedPaths;
     NSMutableDictionary *originalPaths;
 
     // Callipers
-    GSLayer* callipersLayer;
-    SCPathTime* segStart1;
-    SCPathTime* segStart2;
-    SCPathTime* segEnd1;
-    SCPathTime* segEnd2;
+    GSLayer *callipersLayer;
+    SCPathTime *segStart1;
+    SCPathTime *segStart2;
+    SCPathTime *segEnd1;
+    SCPathTime *segEnd2;
     long cacheMin;
     long cacheMax;
     long cacheAvg;
@@ -72,10 +72,10 @@ typedef enum {
     MEASURE_MODE measure_mode;
 }
 
-- (BOOL) multipleSegmentsSelected;
-- (BOOL) anyCurvesSelected;
+- (BOOL)multipleSegmentsSelected;
+- (BOOL)anyCurvesSelected;
 
-- (void)iterateOnCurvedSegmentsOfLayer:(GSLayer*)l withBlock:(void (^)(GSPathSegment*seg))handler;
+- (void)iterateOnCurvedSegmentsOfLayer:(GSLayer *)l withBlock:(void (^)(GSPathSegment *seg))handler;
 
 @end
 
