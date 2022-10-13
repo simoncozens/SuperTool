@@ -215,12 +215,11 @@ bool initDone = false;
     float tunniZoomThreshold = [[NSUserDefaults standardUserDefaults] floatForKey:lineZoomDefault];
     tunniZoomThreshold /= (float)upem;
     tunniZoomThreshold *= 1000.0;
-    
+
+    col = [NSColor systemBlueColor];
     if (currentZoom < tunniZoomThreshold)
-        col = [NSColor colorWithCalibratedRed:0 green:0 blue:1 alpha:currentZoom - tunniZoomThreshold / 2.0];
-    else
-        col = [NSColor blueColor];
-    [col set];
+        col = [col colorWithAlphaComponent:currentZoom - tunniZoomThreshold / 2.0];
+
     // [self drawHandle:NSMakePoint(0, 0) isSelected:FALSE atPoint:tunniPoint];
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     [paragraphStyle setAlignment:NSTextAlignmentCenter];
@@ -247,6 +246,7 @@ bool initDone = false;
     if (sDistance > 0 && eDistance > 0) {
         NSBezierPath *bez = [NSBezierPath bezierPath];
         CGFloat dash[2] = {1.0, 1.0};
+        [col set];
         [bez setLineWidth:0.0];
         [bez appendBezierPathWithArcWithCenter:tunniPoint radius:HANDLE_SIZE / currentZoom startAngle:0 endAngle:359];
         [bez stroke];

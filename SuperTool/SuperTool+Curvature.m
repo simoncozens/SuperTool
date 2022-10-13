@@ -176,7 +176,7 @@ static bool inited = false;
             SCLog( @"At point %@: diff = %f", n, diff);
             if (diff > 250 || diff < FLT_EPSILON) continue;
 
-            NSColor *pinkish = [NSColor colorWithCalibratedRed:1 green:0.1 blue:0.1 alpha:MAX(1 - diff / 250, 0.5)];
+            NSColor *pinkish = [[NSColor systemRedColor] colorWithAlphaComponent:MAX(1 - diff / 250, 0.4)];
             NSBezierPath *path = [NSBezierPath bezierPath];
             [path appendBezierPathWithArcWithCenter:[n position] radius:diff startAngle:0 endAngle:359];
             [pinkish setFill];
@@ -251,8 +251,8 @@ static bool inited = false;
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:GSPointOnCurve(p1, p2, p3, p4, 0)];
 
-    NSColor *grey = [NSColor colorWithCalibratedRed:0.1 green:0.1 blue:0.1 alpha:0.3];
-    NSColor *emptyRed = [NSColor colorWithCalibratedRed:1.0 green:0 blue:0 alpha:alwaysShow ? 0.1 : 0];
+    NSColor *grey = [[NSColor textColor] colorWithAlphaComponent:0.15];
+    NSColor *emptyRed = [[NSColor systemRedColor] colorWithAlphaComponent:alwaysShow ? 0.25 : 0];
 
     combScale /= 5;
     combScale = combScale * combScale * (flipComb ? -1 : 1);
