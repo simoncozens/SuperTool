@@ -168,19 +168,23 @@ static bool inited = false;
 - (void)drawSpotsForLayer:(GSLayer *)Layer {
     for (GSPath *p in Layer.shapes) {
         if (![p isKindOfClass:[GSPath class]]) continue;
+        NSInteger nodeIdx = -1;
         for (GSNode *n in p.nodes) {
+            nodeIdx++;
             // We only want smooth nodes with handles on each side
             if (n.type != CURVE || n.connection != SMOOTH) continue;
-            if ([n nextNode].type != OFFCURVE || [n prevNode].type != OFFCURVE) continue;
+            GSNode *nextNode = [p nodeAtIndex:nodeIdx + 1];
+            GSNode *prevNode = [p nodeAtIndex:nodeIdx - 1];
+            if (nextNode.type != OFFCURVE || prevNode.type != OFFCURVE) continue;
 
             // Compute the curvature coming out of the node
-            CGFloat cForward = GSDistance(n.position, [n nextNode].position);
-            CGFloat dForward = GSDistanceOfPointFromLine([[n nextNode] nextNode].position, n.position, [n nextNode].position);
+            CGFloat cForward = GSDistance(n.position, nextNode.position);
+            CGFloat dForward = GSDistanceOfPointFromLine([p nodeAtIndex:nodeIdx + 2].position, n.position, nextNode.position);
             CGFloat curvForward = dForward / (cForward * cForward);
 
             // Compute the curvature going into of the node
-            CGFloat cBack = GSDistance(n.position, [n prevNode].position);
-            CGFloat dBack = GSDistanceOfPointFromLine([[n prevNode] prevNode].position, n.position, [n prevNode].position);
+            CGFloat cBack = GSDistance(n.position, prevNode.position);
+            CGFloat dBack = GSDistanceOfPointFromLine([p nodeAtIndex:nodeIdx - 2].position, n.position, prevNode.position);
             CGFloat curvBack = dBack / (cBack * cBack);
 
             // And show the difference
