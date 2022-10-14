@@ -22,7 +22,7 @@ NSString *drawCoverageDefault = @"org.simon-cozens.SuperTool.drawingCoverage";
 
 - (void)initCoverage {
     drawCoverage = [[NSMenuItem alloc] initWithTitle:@"Show coverage" action:@selector(displayCoverageState) keyEquivalent:@""];
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:drawCoverageDefault]boolValue]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:drawCoverageDefault]) {
         [drawCoverage setState:NSOnState];
     }
 }
@@ -34,10 +34,10 @@ NSString *drawCoverageDefault = @"org.simon-cozens.SuperTool.drawingCoverage";
 - (void)displayCoverageState {
     if ([drawCoverage state] == NSOnState) {
         [drawCoverage setState:NSOffState];
-        [[NSUserDefaults standardUserDefaults] setObject:@NO forKey:drawCoverageDefault];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:drawCoverageDefault];
     } else {
         [drawCoverage setState:NSOnState];
-        [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:drawCoverageDefault];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:drawCoverageDefault];
     }
     [_editViewController.graphicView setNeedsDisplay:YES];
 }

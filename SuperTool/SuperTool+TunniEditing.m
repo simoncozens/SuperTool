@@ -30,12 +30,12 @@ bool initDone = false;
     drawTunni = [[NSMenuItem alloc] initWithTitle:@"Show Tunni lines" action:@selector(displayTunniState:) keyEquivalent:@"U"];
     [drawTunni setKeyEquivalentModifierMask:NSEventModifierFlagCommand];
     drawTunniTwo = [[NSMenuItem alloc] initWithTitle:@"Show Tunni lines" action:@selector(displayTunniState:) keyEquivalent:@""];
-    
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:drawTunniDefault]) {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults boolForKey:drawTunniDefault]) {
         [drawTunni setState:NSOnState];
         [drawTunniTwo setState:NSOnState];
     }
-    [[NSUserDefaults standardUserDefaults] registerDefaults:@{lineZoomDefault: @(DEFAULT_ZOOM_THRESHOLD)}];
+    [defaults registerDefaults:@{lineZoomDefault: @(DEFAULT_ZOOM_THRESHOLD)}];
     
     NSMenuItem *viewMenu = [[[NSApplication sharedApplication] mainMenu] itemAtIndex:6];
 
@@ -58,11 +58,11 @@ bool initDone = false;
     if ([sender state] == NSOnState) {
         [drawTunni setState:NSOffState];
         [drawTunniTwo setState:NSOffState];
-        [[NSUserDefaults standardUserDefaults] setObject:@NO forKey:drawTunniDefault];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:drawTunniDefault];
     } else {
         [drawTunni setState:NSOnState];
         [drawTunniTwo setState:NSOnState];
-        [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:drawTunniDefault];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:drawTunniDefault];
     }
 
     [_editViewController.graphicView setNeedsDisplay:TRUE];

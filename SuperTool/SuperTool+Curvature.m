@@ -58,10 +58,11 @@ static bool inited = false;
     [drawSpots setRepresentedObject:drawSpotsDefault];
     fade = [[NSMenuItem alloc] initWithTitle:@"Hide pathological curves" action:@selector(displayCurvatureState:) keyEquivalent:@""];
     [fade setRepresentedObject:fadeDefault];
-
-    float cs = [[[NSUserDefaults standardUserDefaults] objectForKey:combScaleDefault]floatValue];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    float cs = [defaults floatForKey:combScaleDefault];
     if (!cs) {
-        [[NSUserDefaults standardUserDefaults] setFloat:CombScale forKey:combScaleDefault];
+        [defaults setFloat:CombScale forKey:combScaleDefault];
     }
     combScaleSliderView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 200, 25)];
     NSTextField *textField = [[NSTextField alloc] initWithFrame:NSMakeRect(25, 0, 75, 25)];
@@ -84,18 +85,17 @@ static bool inited = false;
     flip = [[NSMenuItem alloc] initWithTitle:@"Invert curve" action:@selector(displayCurvatureState:) keyEquivalent:@""];
     [flip setRepresentedObject:flipDefault];
 
-    
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:drawCurvesDefault]boolValue]) {
+    if ([defaults boolForKey:drawCurvesDefault]) {
         [drawCurves setState:NSOnState];
         [drawCurvesTwo setState:NSOnState];
     }
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:drawRainbowsDefault]boolValue]) {
+    if ([defaults boolForKey:drawRainbowsDefault]) {
         [drawRainbows setState:NSOnState];
     }
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:drawSpotsDefault]boolValue]) {
+    if ([defaults boolForKey:drawSpotsDefault]) {
         [drawSpots setState:NSOnState];
     }
-    if (![[[NSUserDefaults standardUserDefaults] objectForKey:fadeDefault]boolValue]) {
+    if (![defaults boolForKey:fadeDefault]) {
         [fade setState:NSOffState];
     } else {
         [fade setState:NSOnState];
@@ -244,8 +244,9 @@ static bool inited = false;
 
     // Grab user options
     BOOL alwaysShow = [fade state] == NSOffState;
-    float combScale = [[[NSUserDefaults standardUserDefaults] objectForKey:combScaleDefault]floatValue];
-    bool flipComb = [[[NSUserDefaults standardUserDefaults] objectForKey:flipDefault]boolValue];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    float combScale = [[defaults objectForKey:combScaleDefault] floatValue];
+    bool flipComb = [defaults boolForKey:flipDefault];
 
     float t = 0.0;
     NSBezierPath *path = [NSBezierPath bezierPath];
