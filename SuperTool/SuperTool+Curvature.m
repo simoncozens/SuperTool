@@ -157,8 +157,14 @@ static bool inited = false;
     }
     maxC = MIN(maxC, 1);
     SCLog(@"Max curve for glyph: %f", maxC);
+    // Grab user options
+    BOOL alwaysShow = [fade state] == NSOffState;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    float combScale = [defaults floatForKey:combScaleDefault];
+    BOOL flipComb = [defaults boolForKey:flipDefault];
+
     [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSPoint p1, NSPoint p2, NSPoint p3, NSPoint p4) {
-        if (doDrawCurves) { [self drawCurvatureForP1:p1 p2:p2 p3:p3 p4:p4 maxCurvature:maxC]; }
+        if (doDrawCurves) { [self drawCurvatureForP1:p1 p2:p2 p3:p3 p4:p4 maxCurvature:maxC alwaysShow:alwaysShow combScale:combScale flipComb:flipComb]; }
         if (doDrawRainbows) { [self drawRainbowsForP1:p1 p2:p2 p3:p3 p4:p4]; }
     }];
     if (doDrawSpots) { [self drawSpotsForLayer:Layer]; }
@@ -233,13 +239,7 @@ static bool inited = false;
 // This is the main curvature comb drawing code. You need to have done
 // an initial pass to find the max curvature for scaling.
 
-- (void)drawCurvatureForP1:(NSPoint)p1 p2:(NSPoint)p2 p3:(NSPoint)p3 p4:(NSPoint)p4 maxCurvature:(float)maxC {
-
-    // Grab user options
-    BOOL alwaysShow = [fade state] == NSOffState;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    float combScale = [[defaults objectForKey:combScaleDefault] floatValue];
-    bool flipComb = [defaults boolForKey:flipDefault];
+- (void)drawCurvatureForP1:(NSPoint)p1 p2:(NSPoint)p2 p3:(NSPoint)p3 p4:(NSPoint)p4 maxCurvature:(float)maxC alwaysShow:(BOOL)alwaysShow combScale:(float)combScale flipComb:(BOOL)flipComb {
 
     float t = 0.0;
     NSBezierPath *path = [NSBezierPath bezierPath];

@@ -202,28 +202,15 @@ bool initDone = false;
     }
 }
 
-- (void)drawTunniLinesForP1:(NSPoint)p1 p2:(NSPoint)p2 p3:(NSPoint)p3 p4:(NSPoint)p4 upem:(NSUInteger)upem {
+- (void)drawTunniLinesForP1:(NSPoint)p1 p2:(NSPoint)p2 p3:(NSPoint)p3 p4:(NSPoint)p4 upem:(NSUInteger)upem zoom:(CGFloat)zoom tunniZoomThreshold:(float)tunniZoomThreshold color:(NSColor *)col attrs:(NSDictionary *)attrs {
     NSPoint tunniPoint = GSIntersectLineLineUnlimited(p1, p2, p3, p4);
     CGFloat sDistance = GSDistance(p1, tunniPoint);
     CGFloat eDistance = GSDistance(p4, tunniPoint);
-    CGFloat currentZoom =  [_editViewController.graphicView scale];
-    NSColor *col;
-    float tunniZoomThreshold = [[NSUserDefaults standardUserDefaults] floatForKey:lineZoomDefault];
+
     tunniZoomThreshold /= (float)upem;
     tunniZoomThreshold *= 1000.0;
 
-    col = [NSColor systemBlueColor];
-    if (currentZoom < tunniZoomThreshold)
-        col = [col colorWithAlphaComponent:currentZoom - tunniZoomThreshold / 2.0];
-
     // [self drawHandle:NSMakePoint(0, 0) isSelected:FALSE atPoint:tunniPoint];
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    [paragraphStyle setAlignment:NSTextAlignmentCenter];
-    NSDictionary *attrs = @{
-        NSFontAttributeName:[NSFont labelFontOfSize:10 / currentZoom],
-        NSForegroundColorAttributeName:col,
-        NSParagraphStyleAttributeName:paragraphStyle
-    };
     if (sDistance > 0) {
         CGFloat xPercent = GSDistance(p1, p2) / sDistance;
         NSAttributedString *label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%.1f%%", xPercent * 100.0] attributes:attrs];
@@ -244,7 +231,7 @@ bool initDone = false;
         CGFloat dash[2] = {1.0, 1.0};
         [col set];
         [bez setLineWidth:0.0];
-        [bez appendBezierPathWithArcWithCenter:tunniPoint radius:HANDLE_SIZE / currentZoom startAngle:0 endAngle:359];
+        [bez appendBezierPathWithArcWithCenter:tunniPoint radius:HANDLE_SIZE / zoom startAngle:0 endAngle:359];
         [bez stroke];
         [bez closePath];
         [bez setLineDash:dash count:2 phase:0];
@@ -258,8 +245,25 @@ bool initDone = false;
     BOOL doDrawTunni = [drawTunni state] == NSOnState;
     if (!doDrawTunni) return;
     NSUInteger upem = Layer.font.unitsPerEm;
+    float tunniZoomThreshold = [[NSUserDefaults standardUserDefaults] floatForKey:lineZoomDefault];
+
+    CGFloat currentZoom = _editViewController.graphicView.scale;
+
+    NSColor *col = [NSColor systemBlueColor];
+    if (currentZoom < tunniZoomThreshold) {
+        col = [col colorWithAlphaComponent:currentZoom - tunniZoomThreshold / 2.0];
+    }
+
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    [paragraphStyle setAlignment:NSTextAlignmentCenter];
+    NSDictionary *attrs = @{
+        NSFontAttributeName:[NSFont labelFontOfSize:10 / currentZoom],
+        NSForegroundColorAttributeName:col,
+        NSParagraphStyleAttributeName:paragraphStyle
+    };
+
     [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSPoint p1, NSPoint p2, NSPoint p3, NSPoint p4) {
-        [self drawTunniLinesForP1:p1 p2:p2 p3:p3 p4:p4 upem:upem];
+        [self drawTunniLinesForP1:p1 p2:p2 p3:p3 p4:p4 upem:upem zoom:currentZoom tunniZoomThreshold:tunniZoomThreshold color:col attrs:attrs];
     }];
 }
 
