@@ -65,7 +65,7 @@ bool initDone = false;
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:drawTunniDefault];
     }
 
-    [_editViewController.graphicView setNeedsDisplay:TRUE];
+    [_editViewController.graphicView setNeedsDisplay:YES];
 }
 
 - (void)tunniMouseDown:(NSEvent *)theEvent {
@@ -254,7 +254,7 @@ bool initDone = false;
     }
 }
 
-- (void)drawTunniBackground:(GSLayer* )Layer {
+- (void)drawTunniBackground:(GSLayer *)Layer {
     BOOL doDrawTunni = [drawTunni state] == NSOnState;
     if (!doDrawTunni) return;
     NSUInteger upem = Layer.font.unitsPerEm;
@@ -262,4 +262,5 @@ bool initDone = false;
         [self drawTunniLinesForP1:p1 p2:p2 p3:p3 p4:p4 upem:upem];
     }];
 }
+
 @end
