@@ -75,7 +75,7 @@ typedef enum {
 - (BOOL)multipleSegmentsSelected;
 - (BOOL)anyCurvesSelected;
 
-- (void)iterateOnCurvedSegmentsOfLayer:(GSLayer *)l withBlock:(void (^)(GSPathSegment *seg))handler;
+- (void)iterateOnCurvedSegmentsOfLayer:(GSLayer *)l withBlock:(void (^)(NSPoint P1, NSPoint P2, NSPoint P3, NSPoint P4))handler;
 
 @end
 

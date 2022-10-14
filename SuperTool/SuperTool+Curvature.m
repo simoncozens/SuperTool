@@ -15,6 +15,18 @@
 #import "SuperTool+Curvature.h"
 #import <AppKit/AppKit.h>
 
+
+float STMaxCurvatureForPoints(NSPoint p1, NSPoint p2, NSPoint p3, NSPoint p4) {
+    float maxC = 0.0;
+    for (float t = 0.0 ; t <= 1.0; t+= 0.02) {
+        CGFloat c = sqrt(curvatureSquaredForT(p1, p2, p3, p4, t));
+        if (c > maxC) {
+            maxC = c;
+        }
+    }
+    return maxC;
+}
+
 @implementation SuperTool (Curvature)
 
 NSMenuItem *drawCurves;
@@ -137,17 +149,17 @@ static bool inited = false;
     BOOL doDrawSpots = [drawSpots state] == NSOnState;
     __block float maxC = 0.0;
     if (doDrawCurves) {
-        [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(GSPathSegment *seg) {
-            float thisC = [self maxCurvatureForSegment:seg];
+        [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSPoint p1, NSPoint p2, NSPoint p3, NSPoint p4) {
+            float thisC = STMaxCurvatureForPoints(p1, p2, p3, p4);
             SCLog(@"Max curve for segments: %f", thisC);
             if (thisC > maxC) maxC = thisC;
         }];
     }
     maxC = MIN(maxC, 1);
     SCLog(@"Max curve for glyph: %f", maxC);
-    [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(GSPathSegment *seg) {
-        if (doDrawCurves) { [self drawCurvatureForSegment:seg maxCurvature:maxC]; }
-        if (doDrawRainbows) { [self drawRainbowsForSegment:seg]; }
+    [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSPoint p1, NSPoint p2, NSPoint p3, NSPoint p4) {
+        if (doDrawCurves) { [self drawCurvatureForP1:p1 p2:p2 p3:p3 p4:p4 maxCurvature:maxC]; }
+        if (doDrawRainbows) { [self drawRainbowsForP1:p1 p2:p2 p3:p3 p4:p4]; }
     }];
     if (doDrawSpots) { [self drawSpotsForLayer:Layer]; }
 }
@@ -186,11 +198,7 @@ static bool inited = false;
 }
 
 // This draws normals scaled by their curvature
-- (void)drawRainbowsForSegment:(GSPathSegment *)seg {
-    NSPoint p1 = [seg pointAtIndex:0];
-    NSPoint p2 = [seg pointAtIndex:1];
-    NSPoint p3 = [seg pointAtIndex:2];
-    NSPoint p4 = [seg pointAtIndex:3];
+- (void)drawRainbowsForP1:(NSPoint)p1 p2:(NSPoint)p2 p3:(NSPoint)p3 p4:(NSPoint)p4 {
     float t = 0.0;
     CGFloat slen = GSLengthOfSegment(p1, p2, p3, p4);
     while (t <= 1.0) {
@@ -218,29 +226,10 @@ static bool inited = false;
     }
 }
 
-- (float)maxCurvatureForSegment:(GSPathSegment *)seg {
-    NSPoint p1 = [seg pointAtIndex:0];
-    NSPoint p2 = [seg pointAtIndex:1];
-    NSPoint p3 = [seg pointAtIndex:2];
-    NSPoint p4 = [seg pointAtIndex:3];
-    float maxC = 0.0;
-    for (float t = 0.0 ; t <= 1.0; t+= 0.02) {
-        CGFloat c = sqrt(curvatureSquaredForT(p1, p2, p3, p4, t));
-        if (c > maxC) {
-            maxC = c;
-        }
-    }
-    return maxC;
-}
-
 // This is the main curvature comb drawing code. You need to have done
 // an initial pass to find the max curvature for scaling.
 
-- (void)drawCurvatureForSegment:(GSPathSegment *)seg maxCurvature:(float)maxC {
-    NSPoint p1 = [seg pointAtIndex:0];
-    NSPoint p2 = [seg pointAtIndex:1];
-    NSPoint p3 = [seg pointAtIndex:2];
-    NSPoint p4 = [seg pointAtIndex:3];
+- (void)drawCurvatureForP1:(NSPoint)p1 p2:(NSPoint)p2 p3:(NSPoint)p3 p4:(NSPoint)p4 maxCurvature:(float)maxC {
 
     // Grab user options
     BOOL alwaysShow = [fade state] == NSOffState;

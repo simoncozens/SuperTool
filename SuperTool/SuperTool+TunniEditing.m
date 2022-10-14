@@ -202,11 +202,7 @@ bool initDone = false;
     }
 }
 
-- (void)drawTunniLinesForSegment:(GSPathSegment *)seg upem:(NSUInteger)upem {
-    NSPoint p1 = [seg pointAtIndex:0];
-    NSPoint p2 = [seg pointAtIndex:1];
-    NSPoint p3 = [seg pointAtIndex:2];
-    NSPoint p4 = [seg pointAtIndex:3];
+- (void)drawTunniLinesForP1:(NSPoint)p1 p2:(NSPoint)p2 p3:(NSPoint)p3 p4:(NSPoint)p4 upem:(NSUInteger)upem {
     NSPoint tunniPoint = GSIntersectLineLineUnlimited(p1, p2, p3, p4);
     CGFloat sDistance = GSDistance(p1, tunniPoint);
     CGFloat eDistance = GSDistance(p4, tunniPoint);
@@ -262,8 +258,8 @@ bool initDone = false;
     BOOL doDrawTunni = [drawTunni state] == NSOnState;
     if (!doDrawTunni) return;
     NSUInteger upem = Layer.font.unitsPerEm;
-    [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(GSPathSegment *seg) {
-        [self drawTunniLinesForSegment:seg upem:upem];
+    [self iterateOnCurvedSegmentsOfLayer:Layer withBlock:^(NSPoint p1, NSPoint p2, NSPoint p3, NSPoint p4) {
+        [self drawTunniLinesForP1:p1 p2:p2 p3:p3 p4:p4 upem:upem];
     }];
 }
 @end

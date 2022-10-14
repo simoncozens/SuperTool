@@ -19,6 +19,7 @@
 #import "SuperTool+Simplify.h"
 #import "SuperTool+Callipers.h"
 #import "SuperTool+Coverage.h"
+#import <GlyphsCore/GSPath+PenDrawing.h>
 
 @implementation SuperTool
 
@@ -141,17 +142,16 @@
     return FALSE;
 }
 
-- (void)iterateOnCurvedSegmentsOfLayer:(GSLayer *)l withBlock:(void (^)(GSPathSegment *seg))handler {
-    GSPath *p;
-    for (p in l.shapes) {
-        if (![p isKindOfClass:[GSPath class]]) continue;
-        NSArray <GSPathSegment *> *segs = p.segments;
-        GSPathSegment *seg;
-        for (seg in segs) {
-            SCLog(@"Looking at segment %@", seg);
-            if (seg.countOfPoints == 4) {
-                handler(seg);
+- (void)iterateOnCurvedSegmentsOfLayer:(GSLayer *)l withBlock:(void (^)(NSPoint P1, NSPoint P2, NSPoint P3, NSPoint P4))handler {
+    for (GSPath *path in l.shapes) {
+        if (![path isKindOfClass:[GSPath class]]) continue;
+        NSUInteger nodeIdx = 0;
+        for (GSNode *node in path.nodes) {
+            // SCLog(@"Looking at segment %@", seg);
+            if (node.type == CURVE) {
+                handler([path positionAtIndex:nodeIdx - 3], [path positionAtIndex:nodeIdx - 2], [path positionAtIndex:nodeIdx - 1], node.position);
             }
+            nodeIdx++;
         }
     }
 }
