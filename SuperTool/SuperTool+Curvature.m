@@ -115,7 +115,7 @@ static bool inited = false;
     inited = true;
 }
 
-- (void)addCurvatureToContextMenu:(NSMenu* )theMenu {
+- (void)addCurvatureToContextMenu:(NSMenu *)theMenu {
     [theMenu insertItem:drawRainbows atIndex:0];
     [theMenu insertItem:drawSpots atIndex:0];
     [theMenu insertItem:fade atIndex:0];

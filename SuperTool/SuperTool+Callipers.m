@@ -55,7 +55,7 @@ NSMutableArray *rainbow;
 
 - (void)callipersMouseDragged:(NSEvent *)theEvent {
     NSPoint loc = [_editViewController.graphicView getActiveLocation:theEvent];
-    [_editViewController.graphicView setNeedsDisplay:TRUE];
+    [_editViewController.graphicView setNeedsDisplay:YES];
     if ([theEvent modifierFlags] & NSShiftKeyMask) {
         CGFloat dx = fabs(loc.x - self.dragStart.x);
         CGFloat dy = fabs(loc.y - _dragStart.y);
@@ -116,7 +116,7 @@ NSMutableArray *rainbow;
     }
     //    NSLog(@"Found %lu intersections!", (unsigned long)[intersections count]);
     if ([intersections count] != 2) {
-        [_editViewController.graphicView setNeedsDisplay:TRUE];
+        [_editViewController.graphicView setNeedsDisplay:YES];
         return;
     }
     
@@ -137,7 +137,7 @@ NSMutableArray *rainbow;
         // NSLog(@"start2: %@, %lu, %g", segStart2->path, segStart2->segId, segStart2->t);
         // NSLog(@"end1: %@, %lu, %g", segEnd1->path, segEnd1->segId, segEnd1->t);
         // NSLog(@"end2: %@, %lu, %g", segEnd2->path, segEnd2->segId, segEnd2->t);
-        [_editViewController.graphicView setNeedsDisplay:TRUE];
+        [_editViewController.graphicView setNeedsDisplay:YES];
     }
     
 }
