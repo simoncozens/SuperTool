@@ -36,7 +36,7 @@ NSMutableArray *rainbow;
     // Called when the mouse button is clicked.
     _editViewController = [_windowController activeEditViewController];
     callipersLayer = [_editViewController.graphicView activeLayer];
-    _dragStart = [_editViewController.graphicView getActiveLocation:theEvent];
+    _draggStart = [_editViewController.graphicView getActiveLocation:theEvent];
     _dragging = true;
     if (tool_state == DRAWING_START) {
         // NSLog(@"Clearing start");
@@ -57,15 +57,15 @@ NSMutableArray *rainbow;
     NSPoint loc = [_editViewController.graphicView getActiveLocation:theEvent];
     [_editViewController.graphicView setNeedsDisplay:YES];
     if ([theEvent modifierFlags] & NSShiftKeyMask) {
-        CGFloat dx = fabs(loc.x - self.dragStart.x);
-        CGFloat dy = fabs(loc.y - _dragStart.y);
+        CGFloat dx = fabs(loc.x - self.draggStart.x);
+        CGFloat dy = fabs(loc.y - self.draggStart.y);
         if (dx < dy) {
-            loc.x = _dragStart.x;
+            loc.x = self.draggStart.x;
         } else {
-            loc.y = _dragStart.y;
+            loc.y = self.draggStart.y;
         }
     }
-    _dragCurrent = loc;
+    _draggCurrent = loc;
 }
 
 - (void)callipersMouseUp:(NSEvent *)theEvent {
@@ -74,8 +74,8 @@ NSMutableArray *rainbow;
     if (!([theEvent modifierFlags] & NSEventModifierFlagOption)) {
         return [super mouseUp:theEvent];
     }
-    NSPoint startPoint = _dragStart;
-    NSPoint endPoint   = _dragCurrent;
+    NSPoint startPoint = self.draggStart;
+    NSPoint endPoint   = _draggCurrent;
     GSLayer *layer = [_editViewController.graphicView activeLayer];
     _dragging = false;
     NSMutableArray *intersections = [NSMutableArray array];
@@ -179,8 +179,8 @@ NSMutableArray *rainbow;
         if (_dragging) {
             NSBezierPath *path = [NSBezierPath bezierPath];
             [path setLineWidth:1];
-            [path moveToPoint:_dragStart];
-            [path lineToPoint:_dragCurrent];
+            [path moveToPoint:_draggStart];
+            [path lineToPoint:_draggCurrent];
             if (tool_state == DRAWING_START) {
                 [[NSColor greenColor] set];
             } else { [[NSColor redColor] set]; }

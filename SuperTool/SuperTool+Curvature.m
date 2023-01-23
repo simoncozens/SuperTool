@@ -226,8 +226,8 @@ static bool inited = false;
         if (c <= 10.0) {
             [col setStroke];
             NSBezierPath *path = [NSBezierPath bezierPath];
-            [path moveToPoint:GSAddPoints(GSPointOnCurve(p1, p2, p3, p4, t), GSScalePoint(normal, -4000 * c))];
-            NSPoint end = GSAddPoints(GSPointOnCurve(p1, p2, p3, p4, t), GSScalePoint(normal, 4000 * c));
+            [path moveToPoint:GSAddPoints(GSPointAtTime(p1, p2, p3, p4, t), GSScalePoint(normal, -4000 * c))];
+            NSPoint end = GSAddPoints(GSPointAtTime(p1, p2, p3, p4, t), GSScalePoint(normal, 4000 * c));
             [path setLineWidth:0];
             [path lineToPoint:end];
             [path stroke];
@@ -243,7 +243,7 @@ static bool inited = false;
 
     float t = 0.0;
     NSBezierPath *path = [NSBezierPath bezierPath];
-    [path moveToPoint:GSPointOnCurve(p1, p2, p3, p4, 0)];
+    [path moveToPoint:GSPointAtTime(p1, p2, p3, p4, 0)];
 
     NSColor *grey = [[NSColor textColor] colorWithAlphaComponent:0.15];
     NSColor *emptyRed = [[NSColor systemRedColor] colorWithAlphaComponent:alwaysShow ? 0.25 : 0];
@@ -258,7 +258,7 @@ static bool inited = false;
         if (c > thisMaxC) thisMaxC = c;
         if (c <= 10.0) {
             // Push this point on the curve out along its normal by an amount related to the curvature
-            NSPoint end = GSAddPoints(GSPointOnCurve(p1, p2, p3, p4, t), GSScalePoint(normal, combScale * c));
+            NSPoint end = GSAddPoints(GSPointAtTime(p1, p2, p3, p4, t), GSScalePoint(normal, combScale * c));
             [path setLineWidth:1];
             [path lineToPoint:end];
         }
@@ -266,7 +266,7 @@ static bool inited = false;
 
     // Fade from grey to light pink depending on tightness of segment
     [[grey blendedColorWithFraction:thisMaxC * 20 ofColor:emptyRed] set];
-    [path lineToPoint:GSPointOnCurve(p1, p2, p3, p4, 1)];
+    [path lineToPoint:GSPointAtTime(p1, p2, p3, p4, 1)];
     [path curveToPoint:p1 controlPoint1:p3 controlPoint2:p2];
     [path fill];
 }
