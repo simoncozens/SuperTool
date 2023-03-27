@@ -6,7 +6,7 @@
 	<dict>
 		<key>Resources/SimplifyInterface.nib</key>
 		<data>
-		V60ysenDErIW74bhu6brQbAy6/0=
+		S7rJCCe1z0paaDfPa834c7Amyc4=
 		</data>
 		<key>Resources/SuperTool-Prefix.pch</key>
 		<data>
@@ -21,21 +21,13 @@
 	<dict>
 		<key>Resources/SimplifyInterface.nib</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			V60ysenDErIW74bhu6brQbAy6/0=
-			</data>
 			<key>hash2</key>
 			<data>
-			QUekzwZWTxBwR9BLekP9igmFcKXcyZ1nFJNKjkf7SOA=
+			BInix3yNniX8WZlj1J2QUVn6qsHxl18ntkj9F9tMQDY=
 			</data>
 		</dict>
 		<key>Resources/SuperTool-Prefix.pch</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			R7D11B4UH6SPl7emwd9dt35WF1E=
-			</data>
 			<key>hash2</key>
 			<data>
 			xLUH5KciBoewbFaetuox2o99omhS3NeFDqn2SQmvQ7k=
@@ -43,10 +35,6 @@
 		</dict>
 		<key>Resources/ToolbarIconTemplate.pdf</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			wieyh+eCsmGIDbpWVleIvasLYsw=
-			</data>
 			<key>hash2</key>
 			<data>
 			RTv0V080bcBhfqeUNGHYldxRDCMyZGMCJc0JeHemeFk=
