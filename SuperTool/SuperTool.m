@@ -29,7 +29,7 @@
     NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
     if (thisBundle) {
         // The toolbar icon:
-        _toolBarIcon = [[NSImage alloc] initWithContentsOfFile:[thisBundle pathForImageResource:@"ToolbarIconTemplate"]];
+        _toolBarIcon = [thisBundle imageForResource:@"ToolbarIconTemplate"];
         [_toolBarIcon setTemplate:YES];
     }
 
