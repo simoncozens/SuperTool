@@ -366,6 +366,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(USER_LIBRARY_DIR)/Application Support/Glyphs/Plugins/";
+				CURRENT_PROJECT_VERSION = 2;
 				DEPLOYMENT_LOCATION = YES;
 				DEVELOPMENT_TEAM = GHYRZM4TBD;
 				DSTROOT = "$(USER_LIBRARY_DIR)/Application Support/Glyphs 3/Plugins";
@@ -377,6 +378,7 @@
 				INFOPLIST_FILE = SuperTool/Info.plist;
 				INSTALL_PATH = /;
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks/";
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.simon-cozens.SuperTool";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -391,6 +393,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = GHYRZM4TBD;
+				CURRENT_PROJECT_VERSION = 2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SYSTEM_APPS_DIR)/Glyphs 3.app/Contents/Frameworks\"",
 					"$(PROJECT_DIR)/SuperTool/",
@@ -399,6 +402,7 @@
 				INFOPLIST_FILE = SuperTool/Info.plist;
 				INSTALL_PATH = /;
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks/";
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.simon-cozens.SuperTool";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
