@@ -1,6 +1,0 @@
-
-#ifdef DEBUG
-#define	SCLog(args...)			(void)printf("%i %s: %s\n", __LINE__, __PRETTY_FUNCTION__, [[NSString stringWithFormat:args] UTF8String])
-#else
-#define	SCLog(args...)			// stubbed out
-#endif

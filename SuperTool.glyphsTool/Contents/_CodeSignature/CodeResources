@@ -4,40 +4,52 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>Resources/SimplifyInterface.nib</key>
+		<key>Resources/SimplifyInterface.nib/keyedobjects-101300.nib</key>
 		<data>
-		S7rJCCe1z0paaDfPa834c7Amyc4=
+		mIQillM3jJDdmiqtcKE6mQerJq4=
 		</data>
-		<key>Resources/SuperTool-Prefix.pch</key>
+		<key>Resources/SimplifyInterface.nib/keyedobjects.nib</key>
 		<data>
-		R7D11B4UH6SPl7emwd9dt35WF1E=
+		sJuGaq41VBIY8LeK8uXLcFdTlXE=
 		</data>
 		<key>Resources/ToolbarIconTemplate.pdf</key>
 		<data>
-		wieyh+eCsmGIDbpWVleIvasLYsw=
+		APYbNy/H0txpce3vy+XtIkgosak=
 		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>Resources/SimplifyInterface.nib</key>
+		<key>Resources/SimplifyInterface.nib/keyedobjects-101300.nib</key>
 		<dict>
+			<key>hash</key>
+			<data>
+			mIQillM3jJDdmiqtcKE6mQerJq4=
+			</data>
 			<key>hash2</key>
 			<data>
-			BInix3yNniX8WZlj1J2QUVn6qsHxl18ntkj9F9tMQDY=
+			iH3mVgGeRPTOFurdysjqBcRzLR9Nc3VL98Ho0rW5eo0=
 			</data>
 		</dict>
-		<key>Resources/SuperTool-Prefix.pch</key>
+		<key>Resources/SimplifyInterface.nib/keyedobjects.nib</key>
 		<dict>
+			<key>hash</key>
+			<data>
+			sJuGaq41VBIY8LeK8uXLcFdTlXE=
+			</data>
 			<key>hash2</key>
 			<data>
-			xLUH5KciBoewbFaetuox2o99omhS3NeFDqn2SQmvQ7k=
+			n7Vj/PWGSBcU99AOmC3e3kCQAf4EDRBTZbEW73w6idM=
 			</data>
 		</dict>
 		<key>Resources/ToolbarIconTemplate.pdf</key>
 		<dict>
+			<key>hash</key>
+			<data>
+			APYbNy/H0txpce3vy+XtIkgosak=
+			</data>
 			<key>hash2</key>
 			<data>
-			RTv0V080bcBhfqeUNGHYldxRDCMyZGMCJc0JeHemeFk=
+			BwscJsUsWwCx34MawfyTVxjVjummDNwPgLXAZ/0PnKI=
 			</data>
 		</dict>
 	</dict>
