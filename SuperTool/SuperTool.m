@@ -21,6 +21,8 @@
 #import "SuperTool+Coverage.h"
 #import <GlyphsCore/GSPath+PenDrawing.h>
 
+static NSImage *_toolBarIcon = nil;
+
 @implementation SuperTool
 
 - (id)init {
