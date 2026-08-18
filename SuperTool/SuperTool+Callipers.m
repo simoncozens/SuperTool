@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #import "SuperTool+Callipers.h"
-#import <GlyphsCore/GSGeometrieHelper.h>
+#import <GlyphsCore/GSGeometryHelpers.h>
 
 int STEPS_VALUE = 500;
 
@@ -37,7 +37,7 @@ NSMutableArray* rainbow;
     // Called when the mouse button is clicked.
     _editViewController = [_windowController activeEditViewController];
     callipersLayer = [_editViewController.graphicView activeLayer];
-    _draggStart = [_editViewController.graphicView getActiveLocation: theEvent];
+    _dragStart = [_editViewController.graphicView getActiveLocation:theEvent];
     _dragging = true;
     if (tool_state == DRAWING_START) {
         //        NSLog(@"Clearing start");
@@ -58,15 +58,15 @@ NSMutableArray* rainbow;
     NSPoint Loc = [_editViewController.graphicView getActiveLocation: theEvent];
     [_editViewController.graphicView setNeedsDisplay: TRUE];
     if ([theEvent modifierFlags] & NSShiftKeyMask) {
-        CGFloat dx = fabs(Loc.x - _draggStart.x);
-        CGFloat dy = fabs(Loc.y - _draggStart.y);
+        CGFloat dx = fabs(Loc.x - _dragStart.x);
+        CGFloat dy = fabs(Loc.y - _dragStart.y);
         if (dx < dy) {
-            Loc.x = _draggStart.x;
+            Loc.x = _dragStart.x;
         } else {
-            Loc.y = _draggStart.y;
+            Loc.y = _dragStart.y;
         }
     }
-    _draggCurrent = Loc;
+    _dragCurrent = Loc;
 }
 
 - (void) callipersMouseUp:(NSEvent*)theEvent {
@@ -75,8 +75,8 @@ NSMutableArray* rainbow;
     if (!([theEvent modifierFlags] & NSEventModifierFlagOption)) {
         return [super mouseUp:theEvent];
     }
-    NSPoint startPoint = _draggStart;
-    NSPoint endPoint   = _draggCurrent;
+    NSPoint startPoint = _dragStart;
+    NSPoint endPoint = _dragCurrent;
     GSLayer* layer = [_editViewController.graphicView activeLayer];
     _dragging = false;
     NSMutableArray* intersections = [NSMutableArray array];
@@ -85,7 +85,7 @@ NSMutableArray* rainbow;
         int i =0;
         NSArray* segs = [p segments];
         while (i < [segs count]) {
-            NSArray *thisSeg = [segs objectAtIndex: i];
+            NSArray *thisSeg = STPointsForSegment([segs objectAtIndex:i]);
             if ([thisSeg count] == 2) {
                 // Set up line intersection
                 NSPoint segstart = [[thisSeg objectAtIndex:0] pointValue];
@@ -101,7 +101,7 @@ NSMutableArray* rainbow;
                 NSPoint handle1 = [[thisSeg objectAtIndex:1] pointValue];
                 NSPoint handle2 = [[thisSeg objectAtIndex:2] pointValue];
                 NSPoint segend = [[thisSeg objectAtIndex:3] pointValue];
-                NSArray* localIntersections = GSIntersectBezier3Line(segstart, handle1, handle2, segend, startPoint, endPoint);
+                NSArray *localIntersections = GSIntersectCubicLine(segstart, handle1, handle2, segend, startPoint, endPoint);
                 for (id _pt in localIntersections) {
                     NSPoint pt = [_pt pointValue];
                     CGFloat t;
@@ -179,8 +179,8 @@ NSMutableArray* rainbow;
         if (_dragging) {
             NSBezierPath * path = [NSBezierPath bezierPath];
             [path setLineWidth: 1];
-            [path moveToPoint: _draggStart];
-            [path lineToPoint: _draggCurrent];
+            [path moveToPoint:_dragStart];
+            [path lineToPoint:_dragCurrent];
             if (tool_state == DRAWING_START) {
                 [[NSColor greenColor] set];
             } else { [[NSColor redColor] set]; }
@@ -191,7 +191,6 @@ NSMutableArray* rainbow;
     //    NSLog(@"Drawing!");
     [self computeRainbow];
     [self drawRainbow];
-    [super drawBackgroundForLayer:layer];
 }
 
 - (void) computeRainbow {

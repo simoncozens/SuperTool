@@ -62,7 +62,7 @@
 		F4B03C981CC88E7100564F32 /* SuperTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SuperTool.h; sourceTree = "<group>"; };
 		F4B03C991CC88E7100564F32 /* SuperTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SuperTool.m; sourceTree = "<group>"; };
 		F4B03C9C1CC88E7100564F32 /* ToolbarIconTemplate.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = ToolbarIconTemplate.pdf; sourceTree = "<group>"; };
-		F4B03C9E1CC88E7100564F32 /* GlyphsCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GlyphsCore.framework; path = /Applications/Glyphs.app/Contents/Frameworks/GlyphsCore.framework; sourceTree = "<absolute>"; };
+		F4B03C9E1CC88E7100564F32 /* GlyphsCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GlyphsCore.framework; path = "/Applications/Glyphs 4.app/Contents/Frameworks/GlyphsCore.framework"; sourceTree = "<absolute>"; };
 		F4B03CA01CC88E7100564F32 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F4C6A21E1E98B28C008A62B7 /* GSNode+SCNodeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GSNode+SCNodeUtils.h"; sourceTree = "<group>"; };
 		F4C6A21F1E98B28C008A62B7 /* GSNode+SCNodeUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GSNode+SCNodeUtils.m"; sourceTree = "<group>"; };
@@ -307,7 +307,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				WARNING_CFLAGS = "-Wno-nullability-completeness";
@@ -353,7 +353,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				WARNING_CFLAGS = "-Wno-nullability-completeness";
 			};
@@ -365,19 +365,20 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CONFIGURATION_BUILD_DIR = "$(USER_LIBRARY_DIR)/Application Support/Glyphs/Plugins/";
+				CONFIGURATION_BUILD_DIR = "$(USER_LIBRARY_DIR)/Application Support/Glyphs 4/Plugins/";
 				DEPLOYMENT_LOCATION = YES;
 				DEVELOPMENT_TEAM = GHYRZM4TBD;
-				DSTROOT = "$(USER_LIBRARY_DIR)/Application Support/Glyphs/Plugins";
+				DSTROOT = "$(USER_LIBRARY_DIR)/Application Support/Glyphs 4/Plugins";
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(SYSTEM_APPS_DIR)/Glyphs.app/Contents/Frameworks",
+					"$(SYSTEM_APPS_DIR)/Glyphs\\ 4.app/Contents/Frameworks",
 					"$(PROJECT_DIR)/SuperTool/",
 				);
 				GCC_PREFIX_HEADER = "SuperTool/SuperTool-Prefix.pch";
 				INFOPLIST_FILE = SuperTool/Info.plist;
 				INSTALL_PATH = /;
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks/";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.simon-cozens.SuperTool";
+				OTHER_LDFLAGS = "-framework GlyphsApp";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.simon-cozens.SuperTool4";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -393,14 +394,15 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = GHYRZM4TBD;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(SYSTEM_APPS_DIR)/Glyphs.app/Contents/Frameworks",
+					"$(SYSTEM_APPS_DIR)/Glyphs\\ 4.app/Contents/Frameworks",
 					"$(PROJECT_DIR)/SuperTool/",
 				);
 				GCC_PREFIX_HEADER = "SuperTool/SuperTool-Prefix.pch";
 				INFOPLIST_FILE = SuperTool/Info.plist;
 				INSTALL_PATH = /;
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks/";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.simon-cozens.SuperTool";
+				OTHER_LDFLAGS = "-framework GlyphsApp";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.simon-cozens.SuperTool4";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;

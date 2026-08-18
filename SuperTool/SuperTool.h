@@ -15,13 +15,13 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <GlyphsCore/GlyphsToolDrawProtocol.h>
-#import <GlyphsCore/GlyphsToolEventProtocol.h>
-#import <GlyphsCore/GlyphsPathPlugin.h>
-#import <GlyphsCore/GSToolSelect.h>
+#import <GlyphsApp/GlyphsToolDrawProtocol.h>
+#import <GlyphsApp/GlyphsToolEventProtocol.h>
+#import <GlyphsApp/GlyphsPathPlugin.h>
+#import <GlyphsApp/GSToolSelect.h>
 #import <GlyphsCore/GSLayer.h>
 #import <GlyphsCore/GSPath.h>
-#import <GlyphsCore/GSGeometrieHelper.h>
+#import <GlyphsCore/GSGeometryHelpers.h>
 #import "GSNode+SCNodeUtils.h"
 #import "GSPath+SCPathUtils.h"
 #import "SCPathTime.h"
@@ -80,4 +80,3 @@ typedef enum {
 - (void)iterateOnCurvedSegmentsOfLayer:(GSLayer*)l withBlock:(void (^)(NSArray*seg))handler;
 
 @end
-

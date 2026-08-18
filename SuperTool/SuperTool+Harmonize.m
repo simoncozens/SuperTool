@@ -47,7 +47,7 @@ static bool inited = false;
     CGFloat r = sqrtf(p0 * p1);
     if (r == INFINITY) return;
     CGFloat t = r / (r+1);
-    NSPoint newA3 =GSLerp([a2 position],[b1 position],t);
+    NSPoint newA3 = GSInterpolatePoints([a2 position], [b1 position], t);
     // One way to do this:
     //    [a3 setPosition:newA3];
     // But we want to keep the oncurve point, so

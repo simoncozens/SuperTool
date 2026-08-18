@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #import "SCPathTime.h"
-#import <GlyphsCore/GSGeometrieHelper.h>
+#import <GlyphsCore/GSGeometryHelpers.h>
 
 @implementation SCPathTime
 
@@ -28,7 +28,8 @@
  b) the path time includes both on-curve and off-curve points (!)
  */
 - (NSPoint) point {
-    NSArray* seg = path.segments[segId];
+    GSPathSegment *pathSegment = path.segments[segId];
+    NSArray *seg = STPointsForSegment(pathSegment);
     if ([ seg count] == 2) {
         NSPoint p1 = [[seg objectAtIndex:0] pointValue];
         NSPoint p2 = [[seg objectAtIndex:1] pointValue];
@@ -76,7 +77,8 @@
 
 
 + (CGFloat) segLength: (GSPath*)p segId:(NSInteger)segId from:(CGFloat)t1 to:(CGFloat)t2 {
-    NSArray* seg = p.segments[segId];
+    GSPathSegment *pathSegment = p.segments[segId];
+    NSArray *seg = STPointsForSegment(pathSegment);
     if ([ seg count] == 2) {
         NSPoint start = [[seg objectAtIndex:0] pointValue];
         NSPoint end = [[seg objectAtIndex:1] pointValue];
@@ -86,13 +88,11 @@
         CGFloat y2 = start.y + (end.y-start.y)*fmod(t2,1.0);
         return sqrtf( (float)(((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2))));
     } else {
-        NSPoint o1, o2, o3, o4;
-        NSPoint i1 = [[seg objectAtIndex:0] pointValue];
-        NSPoint i2 = [[seg objectAtIndex:1] pointValue];
-        NSPoint i3 = [[seg objectAtIndex:2] pointValue];
-        NSPoint i4 = [[seg objectAtIndex:3] pointValue];
-        GSSegmentBetweenPoints(i1,i2,i3,i4, &o1, &o2, &o3, &o4, GSPointAtTime(i1,i2,i3,i4,t1),GSPointAtTime(i1,i2,i3,i4,t2));
-        return GSLengthOfSegment(o1,o2,o3,o4);
+        GSPathSegment *partialSegment = [pathSegment copy];
+        [partialSegment shortenFromTime:t1];
+        CGFloat remainingTime = t1 < 1.0 ? (t2 - t1) / (1.0 - t1) : 0.0;
+        [partialSegment shortenToTime:remainingTime];
+        return partialSegment.length;
     }
 }
 

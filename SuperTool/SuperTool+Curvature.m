@@ -191,10 +191,11 @@ static bool inited = false;
     NSPoint p3 = [seg[2] pointValue];
     NSPoint p4 = [seg[3] pointValue];
     float t=0.0;
-    CGFloat slen = GSLengthOfSegment(p1,p2,p3,p4);
+    GSPathSegment *pathSegment = [[GSPathSegment alloc] initWithCurvePoint1:p1 point2:p2 point3:p3 point4:p4 options:GSSegmentOptionNone];
+    CGFloat slen = pathSegment.length;
     while (t<=1.0) {
-        NSPoint normal = normalForT(p1,p2,p3,p4, t);
-        CGFloat c = sqrt(curvatureSquaredForT(p1,p2,p3,p4,t));
+        NSPoint normal = GSNormalCubicForT(p1,p2,p3,p4, t);
+        CGFloat c = sqrt(GSCurvatureSquaredForT(p1,p2,p3,p4,t));
         CGFloat angle = GSAngleOfVector(normal);
         if (angle <0) { angle = 180+angle; }
         angle = fmod(angle,90.0);
@@ -224,7 +225,7 @@ static bool inited = false;
     NSPoint p4 = [seg[3] pointValue];
     float maxC = 0.0;
     for (float t =0.0 ; t<=1.0; t+= 0.02) {
-        CGFloat c = sqrt(curvatureSquaredForT(p1,p2,p3,p4,t));
+        CGFloat c = sqrt(GSCurvatureSquaredForT(p1,p2,p3,p4,t));
         if (c > maxC) {
             maxC = c;
         }
@@ -258,8 +259,8 @@ static bool inited = false;
     combScale /= maxC;
     float thisMaxC =0.0;
     for (t =0.0 ; t<=1.0; t+= 0.02) {
-        NSPoint normal = normalForT(p1,p2,p3,p4, t);
-        CGFloat c = sqrt(curvatureSquaredForT(p1,p2,p3,p4,t));
+        NSPoint normal = GSNormalCubicForT(p1,p2,p3,p4, t);
+        CGFloat c = sqrt(GSCurvatureSquaredForT(p1,p2,p3,p4,t));
         if (c > thisMaxC) thisMaxC = c;
         if (c <= 10.0) {
             // Push this point on the curve out along its normal by an amount related to the curvature

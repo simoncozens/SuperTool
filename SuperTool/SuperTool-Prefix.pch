@@ -4,3 +4,5 @@
 #else
 #define	SCLog(args...)			// stubbed out
 #endif
+
+#import "Glyphs4Compatibility.h"

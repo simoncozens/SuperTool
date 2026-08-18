@@ -71,8 +71,12 @@
 }
 
 - (NSUInteger)groupID {
-	// Return a number between 50 and 1000 to position the icon in the toolbar.
+	// Third-party tools use IDs from 50 through 1000.
 	return 99;
+}
+
+- (NSImage *)toolBarIcon {
+	return _toolBarIcon;
 }
 
 - (NSString *)trigger {
@@ -144,8 +148,9 @@
 - (void)iterateOnCurvedSegmentsOfLayer:(GSLayer*)l withBlock:(void (^)(NSArray*seg))handler {
     GSPath *p;
     for (p in l.paths) {
-        NSArray* seg;
-        for (seg in p.segments) {
+        GSPathSegment *pathSegment;
+        for (pathSegment in p.segments) {
+            NSArray *seg = STPointsForSegment(pathSegment);
             if ([seg count] == 4) {
                 handler(seg);
             }
@@ -153,7 +158,7 @@
     }
 }
 
-- (void)drawForegroundForLayer:(GSLayer *)layer {
+- (void)drawForegroundForLayer:(GSLayer *)layer options:(NSDictionary *)options {
     if ([simplifyWindow isKeyWindow]) {
         for (GSPath *p in [copiedPaths allValues]) {
             NSBezierPath* bez = [p bezierPath];
@@ -166,7 +171,8 @@
     }
 }
 
-- (void)drawBackgroundForLayer:(GSLayer*)Layer {
+- (void)drawBackgroundForLayer:(GSLayer *)Layer options:(NSDictionary *)options {
+    [super drawBackgroundForLayer:Layer options:options];
     [self drawTunniBackground:Layer];
     [self drawCurvatureBackground:Layer];
     [self drawCallipers:Layer];

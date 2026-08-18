@@ -82,7 +82,8 @@ bool initDone = false;
     float tunniZoomThreshold = [[[NSUserDefaults standardUserDefaults] objectForKey:lineZoomDefault]floatValue];
     for (p in currentLayer.paths) {
         NSArray* seg;
-        for (seg in p.segments) {
+        for (GSPathSegment *pathSegment in p.segments) {
+            seg = STPointsForSegment(pathSegment);
             if ([seg count] == 4) {
                 NSPoint p1 = [seg[0] pointValue];
                 NSPoint p2 = [seg[1] pointValue];
@@ -94,8 +95,8 @@ bool initDone = false;
                     tunniDraggingLine = false;
                 gotOne:
                     tunniSeg = seg;
-                    tunniSegP2 = [currentLayer nodeAtPoint:p2 excludeNode:NULL tollerance:0.5];
-                    tunniSegP3 = [currentLayer nodeAtPoint:p3 excludeNode:NULL tollerance:0.5];
+                    tunniSegP2 = [currentLayer nodeAtPoint:p2 excludeNode:nil ignoreLocked:NO tolerance:0.5];
+                    tunniSegP3 = [currentLayer nodeAtPoint:p3 excludeNode:nil ignoreLocked:NO tolerance:0.5];
                     [[currentLayer undoManager] beginUndoGrouping];
                     return;
                 }
@@ -134,23 +135,23 @@ bool initDone = false;
         xPercent += GSDistanceOfPointFromLineSegment(Loc, p2, p3) / ((sDistance+eDistance)/2) * sign;
         yPercent += GSDistanceOfPointFromLineSegment(Loc, p2, p3) / ((sDistance+eDistance)/2) * sign;
         /* ??? */
-        newP2 = GSLerp(p1, tunniPoint, xPercent);
-        newP3 = GSLerp(p4, tunniPoint, yPercent);
+        newP2 = GSInterpolatePoints(p1, tunniPoint, xPercent);
+        newP3 = GSInterpolatePoints(p4, tunniPoint, yPercent);
     } else {
         /* Arrange for the tunni point of this segment to be Loc, keeping curvature */
-        newP2 = GSLerp(p1, Loc, xPercent);
-        newP3 = GSLerp(p4, Loc, yPercent);
+        newP2 = GSInterpolatePoints(p1, Loc, xPercent);
+        newP3 = GSInterpolatePoints(p4, Loc, yPercent);
     }
     /* Now do magic */
     GSNode *n;
     if (tunniSegP2) {
         [tunniSegP2 setPosition:newP2];
-        n =[currentLayer nodeAtPoint:p1 excludeNode:NULL tollerance:0.5];
+        n = [currentLayer nodeAtPoint:p1 excludeNode:nil ignoreLocked:NO tolerance:0.5];
         if (n) [n correct];
     }
     if (tunniSegP3) {
         [tunniSegP3 setPosition:newP3];
-        n = [currentLayer nodeAtPoint:p4 excludeNode:NULL tollerance:0.5];
+        n = [currentLayer nodeAtPoint:p4 excludeNode:nil ignoreLocked:NO tolerance:0.5];
         if (n) [n correct];
     }
 }
@@ -198,8 +199,8 @@ bool initDone = false;
         if (xPercent > 1 && yPercent >1) return; // Inflection point
         if (xPercent < 0.01 && yPercent <0.01) return; // Inflection point
         CGFloat avg = (xPercent+yPercent)/2.0;
-        NSPoint newP2 = GSLerp(p1, t, avg);
-        NSPoint newP3 = GSLerp(p4, t, avg);
+        NSPoint newP2 = GSInterpolatePoints(p1, t, avg);
+        NSPoint newP3 = GSInterpolatePoints(p4, t, avg);
         [(GSNode*)seg[1] setPosition:newP2];
         [(GSNode*)seg[2] setPosition:newP3];
     }
@@ -239,14 +240,14 @@ bool initDone = false;
         //        NSAffineTransform *rotate = [NSAffineTransform transform];
         //        [rotate rotateByDegrees:GSAngleOfVector(GSSubtractPoints(p2, p1)) / M_PI * 180.0];
         //        [rotate concat];
-        [label drawAtPoint:GSMiddlePoint(p1,p2)];
+        [label drawAtPoint:GSInterpolatePoints(p1, p2, 0.5)];
         //        [rotate invert];
         //        [rotate concat];
     }
     if (eDistance > 0) {
         CGFloat yPercent = GSDistance(p3,p4) / eDistance;
         NSAttributedString *label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%.1f%%", yPercent*100.0] attributes:attrs];
-        [label drawAtPoint:GSMiddlePoint(p3,p4)];
+        [label drawAtPoint:GSInterpolatePoints(p3, p4, 0.5)];
     }
     if (sDistance > 0 && eDistance > 0) {
         NSBezierPath* bez = [NSBezierPath bezierPath];
